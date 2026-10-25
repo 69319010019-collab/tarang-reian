@@ -1,0 +1,161 @@
+<!DOCTYPE html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Tarang Reian ระบบจัดตารางเรียน</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f8f4;--c:#fff;--t:#14281d;--m:#5c6f63;--g:#1b6b43;--on:#fff;--l:#d9efe0;--b:#dbe6de;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#101a14;--c:#18241d;--t:#e6f1ea;--m:#9db1a5;--g:#4cc38a;--on:#06150d;--l:#1f3a2b;--b:#2a3d32}}
+*{box-sizing:border-box}html,body{height:100%;margin:0}body{font-family:"Noto Sans Thai",system-ui,sans-serif;background:var(--bg);color:var(--t);font-size:14px;display:flex}
+nav{width:220px;border-right:1px solid var(--b);padding:16px 12px;display:flex;flex-direction:column;gap:6px;flex-shrink:0}
+nav h1{font-size:15px;margin:0 0 12px 6px}nav small{display:block;font-weight:400;color:var(--m);font-size:11px}
+.st{display:flex;gap:10px;align-items:center;padding:10px;border-radius:10px;cursor:pointer;color:var(--m)}.st.on{background:var(--l);color:var(--t);font-weight:600}
+.st i{width:22px;height:22px;border-radius:50%;border:1px solid var(--b);display:grid;place-items:center;font-size:11px;font-style:normal}.st.ok i,.st.on i{background:var(--g);color:var(--on);border-color:var(--g)}
+main{flex:1;padding:28px 32px;overflow:auto;min-width:0}h2{margin:0 0 4px;font-size:22px}.sub{color:var(--m);margin:0 0 18px}
+.card{background:var(--c);border:1px solid var(--b);border-radius:14px;padding:16px}
+.btn{background:var(--g);color:var(--on);border:0;border-radius:9px;padding:10px 18px;font:600 14px inherit;font-family:inherit;cursor:pointer}.btn.o{background:none;color:var(--g);border:1px solid var(--g)}.btn:disabled{opacity:.4;cursor:default}
+.drop{border:1.5px dashed var(--g);text-align:center;padding:36px 12px;cursor:pointer;margin-bottom:16px}
+.two{display:grid;grid-template-columns:290px 1fr;gap:16px}.row{display:flex;justify-content:space-between;padding:10px 6px;border-bottom:1px solid var(--b);cursor:pointer}.row.on{background:var(--l);border-radius:8px}.row small{color:var(--m)}
+.chk{display:grid;grid-template-columns:1fr 1fr;gap:10px}.chk div{display:flex;gap:10px;padding:12px;border:1px solid var(--b);border-radius:10px;background:var(--c)}.chk small{display:block;color:var(--m)}.bad{border-color:#d33!important}
+table{border-collapse:collapse;width:100%;font-size:12px}td,th{border:1px dashed var(--b);padding:3px;text-align:center;height:62px}th{background:#a9c6e6;color:#14281d;height:30px}td.d{color:#14281d;font-weight:700;width:70px}td.s{text-align:left;color:#14281d;border-radius:6px;font-weight:600}td.s small{display:block;font-weight:400;font-size:10px}
+.tabs{display:inline-flex;background:var(--l);border-radius:10px;padding:4px;margin-bottom:12px}.tabs span{padding:6px 14px;border-radius:8px;cursor:pointer}.tabs .on{background:var(--c);font-weight:600}
+input[type=text]{width:100%;padding:9px;border:1px solid var(--b);border-radius:9px;background:var(--c);color:var(--t);margin-bottom:8px;font-family:inherit}
+.wrap{overflow-x:auto}.ex{display:grid;grid-template-columns:1fr 1fr;gap:12px}.ex .btn{margin-right:6px;margin-top:8px}
+@media(max-width:760px){body{flex-direction:column}nav{width:100%;flex-direction:row;overflow-x:auto;border:0}nav h1{display:none}main{padding:16px}.two,.chk,.ex{grid-template-columns:1fr}}
+
+body{background:radial-gradient(900px 480px at 100% -10%,#c9efdb99,transparent),radial-gradient(800px 480px at -10% 110%,#d6e9ff80,transparent),var(--bg)}
+nav{background:var(--c);box-shadow:4px 0 28px #0000000d}
+nav h1{display:flex;gap:10px;align-items:center;font-size:16px;margin-bottom:18px}
+nav h1:before{content:"▦";width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#17623d,#3ec788);color:#fff;display:grid;place-items:center;font-size:18px;box-shadow:0 6px 14px #1b6b4355;flex:none}
+.st{transition:.2s}.st:hover{background:var(--l)}.st.on{box-shadow:0 4px 14px #1b6b4326}
+h2{font-size:26px;letter-spacing:-.3px}h3{margin:18px 0 10px}
+.card{box-shadow:0 8px 28px #14281d12;transition:.2s}
+.btn{background:linear-gradient(135deg,var(--g),#2e9a63);box-shadow:0 6px 16px #1b6b4333;transition:.2s}.btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 10px 20px #1b6b4340}.btn.o{background:none;box-shadow:none}
+.drop{background:linear-gradient(135deg,var(--c),var(--l));border-radius:18px;padding:42px 12px}.drop:hover{transform:scale(1.005)}
+.row{transition:.15s;border-radius:8px}.row:hover{background:var(--l)}
+.chk div{align-items:center;box-shadow:0 4px 14px #14281d0d}
+.chk b{width:26px;height:26px;border-radius:50%;background:var(--l);display:grid;place-items:center;flex:none}
+.tabs{box-shadow:inset 0 0 0 1px var(--b)}.tabs .on{box-shadow:0 2px 8px #0000001a}
+.tt{background:linear-gradient(160deg,#cfe4f8,#e3f0ff);border-radius:20px;padding:18px;box-shadow:0 12px 34px #3b6aa526;position:relative}
+.tt:before{content:"ตารางเรียน";display:block;width:fit-content;margin:0 auto 14px;background:#fff;color:#14346b;font-weight:700;font-size:22px;padding:8px 34px;border-radius:30px;box-shadow:0 4px 12px #0000001a}
+.tt td{border:0;background:#ffffffb8;border-radius:10px}.tt td.s,.tt td.d{box-shadow:0 3px 8px #0000001f}.tt th{border:0;border-radius:8px}.tt table{border-collapse:separate;border-spacing:4px}
+select{padding:9px;border-radius:9px;border:1px solid var(--b);background:var(--c);color:var(--t);font-family:inherit;margin-top:8px;margin-right:6px}
+body{background:radial-gradient(900px 480px at 100% -10%,var(--glow,#c9efdb),transparent),radial-gradient(800px 480px at -10% 110%,var(--l),transparent),var(--bg)}
+body,nav,.card,.btn,.tt{transition:background .4s,color .4s,border-color .4s}
+.btn{background:linear-gradient(135deg,var(--g),var(--g2,#2e9a63))}.btn.o{background:none}.btn:active{transform:scale(.97)}
+nav h1:before{background:linear-gradient(135deg,var(--g),var(--g2,#3ec788))}
+.tt{background:linear-gradient(160deg,var(--l),var(--bg))}.tt:before{color:var(--g)}
+#nf{margin-top:auto;display:flex;flex-direction:column;gap:12px;padding-top:12px;border-top:1px solid var(--b)}.sw{display:flex;gap:8px;justify-content:center}.sw b{width:24px;height:24px;border-radius:50%;cursor:pointer;transition:.2s;border:2px solid var(--c);box-shadow:0 0 0 1px var(--b)}.sw b:hover{transform:scale(1.25)}.sw b.on{box-shadow:0 0 0 2px var(--g)}.us{display:flex;gap:10px;align-items:center;font-weight:600}.us small{display:block;color:var(--m);font-size:11px;font-weight:400}.av{width:34px;height:34px;border-radius:50%;background:var(--l);display:grid;place-items:center;font-weight:700}
+#lg{display:none;position:fixed;inset:0;z-index:50;place-items:center;background:linear-gradient(135deg,var(--bg),var(--l));overflow:hidden}#lg.bye{opacity:0;transition:.4s;pointer-events:none}
+#lg:before,#lg:after{content:"";position:absolute;width:440px;height:440px;border-radius:50%;background:linear-gradient(135deg,var(--g),var(--g2));opacity:.28;filter:blur(46px);animation:fl 9s ease-in-out infinite alternate}#lg:before{left:-120px;top:-100px}#lg:after{right:-120px;bottom:-120px;animation-delay:-4s}
+.lc{position:relative;width:min(380px,92vw);padding:34px 30px;border-radius:22px;animation:up .6s both}.lc label{font-size:13px;color:var(--m)}.lo{width:60px;height:60px;margin:0 auto 12px;border-radius:18px;background:linear-gradient(135deg,var(--g),var(--g2));color:var(--on);display:grid;place-items:center;font-size:28px;animation:bob 3s ease-in-out infinite;box-shadow:0 10px 24px #0003}
+#lg input{width:100%;padding:12px;border:1px solid var(--b);border-radius:11px;background:var(--c);color:var(--t);font-family:inherit;font-size:14px;margin:6px 0 12px;outline:0;transition:.2s}#lg input:focus{border-color:var(--g);box-shadow:0 0 0 4px var(--l)}.shake{animation:sh .4s}
+.pg>*{animation:up .45s both}.pg .chk div,.pg .stats div{animation:pop .5s both}.pg .tt td.s{animation:pop .45s both}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}.stats div{background:var(--c);border:1px solid var(--b);border-radius:14px;padding:14px;text-align:center;box-shadow:0 6px 18px #14281d12}.stats b{display:block;font-size:32px;background:linear-gradient(135deg,var(--g),var(--g2));-webkit-background-clip:text;background-clip:text;color:transparent}.stats small{color:var(--m)}
+.ld{height:5px;border-radius:5px;background:var(--l);overflow:hidden;margin-top:16px}.ld i{display:block;height:100%;width:40%;background:linear-gradient(90deg,var(--g),var(--g2));border-radius:5px;animation:ld .9s ease-in-out infinite alternate}
+.toast{position:fixed;bottom:24px;left:50%;background:var(--g);color:var(--on);padding:12px 22px;border-radius:30px;box-shadow:0 10px 28px #0003;z-index:100;font-weight:600;animation:tin .3s both,out .4s 2.3s forwards}.toast.er{background:#d33;color:#fff}
+.cf{position:fixed;top:-16px;width:9px;height:14px;z-index:99;pointer-events:none;animation:fall 2.4s linear forwards}
+@keyframes up{from{opacity:0;transform:translateY(14px)}}@keyframes pop{from{opacity:0;transform:scale(.85)}}@keyframes fl{to{transform:translate(70px,50px) scale(1.2)}}@keyframes bob{50%{transform:translateY(-6px) rotate(-4deg)}}@keyframes sh{25%{transform:translateX(-9px)}75%{transform:translateX(9px)}}@keyframes ld{to{margin-left:60%}}@keyframes tin{from{opacity:0;transform:translate(-50%,20px)}to{transform:translate(-50%,0)}}@keyframes out{to{opacity:0;transform:translate(-50%,10px)}}@keyframes fall{to{transform:translateY(108vh) rotate(720deg)}}
+@media(max-width:760px){.stats{grid-template-columns:1fr 1fr}#nf{flex-direction:row;margin:0;border:0;padding:0}.us{display:none}}
+.sw{display:none}nav h1:before{display:none}.lg{width:40px;height:40px;padding:8px;border-radius:12px;background:linear-gradient(135deg,var(--g),var(--g2));color:var(--on);box-shadow:0 6px 14px #0003;flex:none}.lg svg,.lo svg{width:100%;height:100%;display:block}.lo{padding:12px}
+.hint{background:var(--l);border:1px dashed var(--g);border-radius:12px;padding:10px 12px;font-size:13px;margin-bottom:14px;cursor:pointer;transition:.2s}.hint:hover{transform:translateY(-2px)}.hint code{background:var(--c);padding:1px 7px;border-radius:6px;font-weight:700;color:var(--g)}.hint small{display:block;color:var(--m);margin-top:2px}
+</style></head><body><nav><h1><span class="lg"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="9" width="28" height="26" rx="7"/><path d="M6 17h28M14 4v8M26 4v8M14 25l4 4 8-8"/></svg></span><span>Tarang Reian<small>ระบบจัดตารางเรียน</small></span></h1><div id="nv" style="display:contents"></div><div id="nf"></div></nav><main id="m"></main><div id="lg"></div>
+<script>
+const $=s=>document.querySelector(s),D=['จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์'],TM=['08:00–09:00','09:00–10:00','10:00–11:00','11:00–12:00','13:00–14:00','14:00–15:00','15:00–16:00','16:00–17:00'];
+const F=[['groups','กลุ่มเรียน'],['teachers','ครู'],['rooms','ห้อง'],['courses','รายวิชา'],['offerings','รายการสอน'],['timeslots','ช่วงเวลา'],['blocked_slots','เวลาที่ถูกบล็อก'],['fixed_sessions','ครั้งเรียนที่ล็อกไว้'],['students','นักศึกษา'],['enrollments','การลงทะเบียน']];
+const COL=['#fde68a','#fed7aa','#bae6fd','#c7d2fe','#99f6e4','#bbf7d0','#e9d5ff','#fbcfe8'];
+let db={},sol=null,chk=[],step=1,tab='g',sel=null,pv=null,q='',msg='';
+const shuf=a=>{for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+function csv(t){const L=t.replace(/^\uFEFF/,'').trim().split(/\r?\n/).map(l=>l.split(',').map(x=>x.trim()));const h=L.shift();return L.map(r=>Object.fromEntries(h.map((k,i)=>[k,r[i]||''])))}
+function sample(){const g=[],t=[],r=[],c=[],o=[],ld={};
+['1/1','1/2','1/3','1/4','2/1','2/2','2/3','2/4'].forEach((n,i)=>g.push({group_id:'G'+i,name:'ปวส.'+n,size:20+i%3}));
+['สมชาย','สุดา','วิชัย','มาลี','ประเสริฐ','นภา','อนันต์','กมล','สุภาพ','ธนา'].forEach((n,i)=>{t.push({teacher_id:'T'+i,name:'อ.'+n,max_per_day:6,max_per_week:24});ld['T'+i]=0});
+[['คอม',2],['เครือข่าย',2],['เรียนรวม',2],['มัลติมีเดีย',2]].forEach(([ty,k])=>{for(let j=1;j<=k;j++)r.push({room_id:'R'+r.length,name:'ห้อง'+ty+' '+j,type:ty,capacity:30})});
+const C=[['เครือข่ายคอมพิวเตอร์','เครือข่าย','2+2',[0,1,2]],['การเขียนโปรแกรม','คอม','2+2',[3,4,5]],['ภาษาอังกฤษ','มัลติมีเดีย','1+1',[6,7]],['สื่อดิจิทัล','เรียนรวม','1+1',[6,7,8]],['คณิตศาสตร์','เรียนรวม','2',[8,9]],['ฐานข้อมูล','เครือข่าย','3',[1,2,9]],['เว็บเทคโนโลยี','คอม','3',[3,4,5]]];
+C.forEach((x,i)=>c.push({course_id:'C'+i,name:x[0],room_type:x[1]}));
+g.forEach(G=>C.forEach((x,i)=>{const T=x[3].map(k=>'T'+k).sort((a,b)=>ld[a]-ld[b])[0];ld[T]+=x[2].split('+').reduce((s,n)=>s+ +n,0);o.push({offering_id:'O'+o.length,course_id:'C'+i,group_id:G.group_id,teacher_id:T,blocks:x[2]})}));
+const ts=[];for(let d=1;d<=5;d++)for(let p=1;p<=8;p++)ts.push({day:d,period:p});
+db={groups:g,teachers:t,rooms:r,courses:c,offerings:o,timeslots:ts,
+blocked_slots:[{type:'teacher',id:'T9',day:3,period:1},{type:'teacher',id:'T9',day:3,period:2},{type:'room',id:'R7',day:5,period:5}],
+fixed_sessions:[{offering_id:'O0',day:1,period:1,room_id:'R2'},{offering_id:'O8',day:2,period:5,room_id:'R0'},{offering_id:'O14',day:3,period:3,room_id:'R3'}],students:[],enrollments:[]};
+F.forEach(([k])=>db[k]._s=1)}
+function solve(){const Cs=Object.fromEntries(db.courses.map(c=>[c.course_id,c])),Tm=Object.fromEntries(db.teachers.map(t=>[t.teacher_id,t])),Gs=Object.fromEntries(db.groups.map(g=>[g.group_id,g])),
+blk=new Set(db.blocked_slots.map(b=>[b.type,b.id,b.day,b.period].join()));
+const S0=[];db.offerings.forEach(o=>o.blocks.split('+').forEach(n=>S0.push({o:o.offering_id,len:+n,g:o.group_id,t:o.teacher_id,c:o.course_id})));
+for(let a=0;a<400;a++){const B=new Set(),N={},out=[],od=new Set(),S=S0.map(s=>({...s}));
+const inc=(k,n)=>N[k]=(N[k]||0)+n,rm=s=>[...Array(s.len).keys()];
+const ok=(s,d,p,r)=>{if(p+s.len-1>(p<=4?4:8)||od.has(s.o+d))return 0;
+if((N['gd'+s.g+d]||0)+s.len>7||(N['td'+s.t+d]||0)+s.len>+Tm[s.t].max_per_day||(N['tw'+s.t]||0)+s.len>+Tm[s.t].max_per_week)return 0;
+return rm(s).every(k=>{const q=p+k;return!B.has('g'+s.g+d+q)&&!B.has('t'+s.t+d+q)&&!B.has('r'+r.room_id+d+q)&&!blk.has(['teacher',s.t,d,q].join())&&!blk.has(['room',r.room_id,d,q].join())})};
+const put=(s,d,p,r)=>{rm(s).forEach(k=>['g'+s.g,'t'+s.t,'r'+r.room_id].forEach(x=>B.add(x+d+(p+k))));inc('gd'+s.g+d,s.len);inc('td'+s.t+d,s.len);inc('tw'+s.t,s.len);od.add(s.o+d);s.done=1;out.push({...s,room:r.room_id,day:d,period:p})};
+db.fixed_sessions.forEach(f=>{const s=S.find(x=>x.o===f.offering_id&&!x.done);if(s)put(s,+f.day,+f.period,db.rooms.find(r=>r.room_id===f.room_id))});
+let bad=0;for(const s of shuf(S.filter(x=>!x.done)).sort((a,b)=>b.len-a.len)){const rs=db.rooms.filter(r=>r.type===Cs[s.c].room_type),C=[];
+for(let d=1;d<=5;d++)for(let p=1;p<=8;p++)rs.forEach(r=>C.push([d,p,r]));
+const h=shuf(C).find(([d,p,r])=>ok(s,d,p,r));if(!h){bad=1;break}put(s,...h)}
+if(!bad){sol=out;return 1}}
+sol=null;return 0}
+function validate(){const k={},cnt=(x)=>k[x]=(k[x]||0)+1,Cs=Object.fromEntries(db.courses.map(c=>[c.course_id,c])),Rm=Object.fromEntries(db.rooms.map(r=>[r.room_id,r])),Tm=Object.fromEntries(db.teachers.map(t=>[t.teacher_id,t]));
+let v=Array(12).fill(0);const cl=(p)=>Object.keys(k).filter(x=>x[0]==p&&k[x]>1).length;
+const dl={},tw={},od={};
+sol.forEach(s=>{for(let i=0;i<s.len;i++){const q=s.period+i;cnt('g'+s.g+s.day+q);cnt('t'+s.t+s.day+q);cnt('r'+s.room+s.day+q);
+if(db.blocked_slots.some(b=>b.day==s.day&&b.period==q&&b.id==(b.type=='teacher'?s.t:s.room)&&b.type[0]==(b.id==s.t?'t':'r')))v[10]++}
+if(Cs[s.c].room_type!==Rm[s.room].type)v[3]++;if(s.period+s.len-1>(s.period<=4?4:8))v[4]=v[5]=1;
+dl['g'+s.g+s.day]=(dl['g'+s.g+s.day]||0)+s.len;dl['t'+s.t+s.day]=(dl['t'+s.t+s.day]||0)+s.len;tw[s.t]=(tw[s.t]||0)+s.len;
+if(od[s.o+s.day])v[7]++;od[s.o+s.day]=1});
+v[0]=cl('t');v[1]=cl('r');v[2]=cl('g');
+const tot=db.offerings.reduce((a,o)=>a+o.blocks.split('+').length,0),hrs=db.offerings.reduce((a,o)=>a+o.blocks.split('+').reduce((x,n)=>x+ +n,0),0);
+v[6]=sol.length==tot&&sol.reduce((a,s)=>a+s.len,0)==hrs?0:1;
+v[8]=Object.entries(dl).filter(([x,n])=>x[0]=='t'&&n>+Tm[x.slice(1,-1)].max_per_day).length+Object.entries(tw).filter(([t,n])=>n>+Tm[t].max_per_week).length;
+v[9]=Object.entries(dl).filter(([x,n])=>x[0]=='g'&&n>7).length;
+v[11]=db.fixed_sessions.filter(f=>!sol.some(s=>s.o==f.offering_id&&s.day==f.day&&s.period==f.period&&s.room==f.room_id)).length;
+const N=['ครูไม่ชนคาบ','ห้องไม่ชนคาบ','กลุ่มเรียนไม่ชนกัน','ห้องตรงประเภท','วันและเวลาเหมาะสม','คาบติดต่อกันครบ','จัดครบทุกครั้งเรียน','ครั้งซ้ำต้องคนละวัน','ครูไม่เกินภาระ','กลุ่มไม่เกิน 7 คาบ/วัน','เคารพช่วงถูกบล็อก','คาบที่ล็อกต้องตรงเป๊ะ'];
+chk=N.map((n,i)=>[n,!v[i],v[i]?'พบ '+v[i]+' จุดที่ไม่ผ่าน':'ผ่าน'])}
+const nm=(a,id,f)=>(a.find(x=>x[f]==id)||{}).name;
+async function sv(n,d){try{const m=typeof claude!=='undefined'&&await claude.use('downloads');if(!m)throw 0;await m.save({filename:n,data:d});msg='บันทึกไฟล์แล้ว'}catch(e){if(e&&e.code=='declined')msg='ยกเลิกการดาวน์โหลด';else try{const a=document.createElement('a');a.href=URL.createObjectURL(d instanceof Blob?d:new Blob([d]));a.download=n;a.click()}catch(_){msg='ดาวน์โหลดไม่ได้ ลองปุ่มคัดลอกแทน'}}draw()}
+function dl(n,t){sv(n,new Blob(['\uFEFF'+t],{type:'text/csv'}))}
+async function png(kind,id){const f=sol.filter(s=>s[kind]==id),L={g:[db.groups,'group_id'],t:[db.teachers,'teacher_id'],room:[db.rooms,'room_id']}[kind],name=nm(L[0],id,L[1]);
+try{await document.fonts.load('700 20px "Noto Sans Thai"')}catch(e){}
+const W=1500,H=880,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d'),g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#cfe4f8');g.addColorStop(1,'#e8f3ff');x.fillStyle=g;x.fillRect(0,0,W,H);
+const R=(a,b,w,h,r,k)=>{x.beginPath();x.roundRect(a,b,w,h,r);x.fillStyle=k;x.fill()};
+const T=(s,a,b,fs,wt,k,al,mw)=>{let z=fs;do{x.font=wt+' '+z+'px "Noto Sans Thai",sans-serif';z--}while(mw&&z>9&&x.measureText(s).width>mw);x.fillStyle=k;x.textAlign=al||'left';x.textBaseline='middle';x.fillText(s,a,b)};
+R(W/2-160,34,320,72,36,'#fff');T('ตารางเรียน',W/2,70,38,700,'#14346b','center');
+const X0=70,Y0=140,dw=110,pw=150,bw=50,hh=50,rh=112,px=p=>X0+dw+(p-1)*pw+(p>4?bw:0),ink='#14281d';
+R(X0,Y0,dw+8*pw+bw,hh,12,'#a9c6e6');T('เวลา',X0+dw/2,Y0+hh/2,16,600,ink,'center');TM.forEach((t,i)=>T(t,px(i+1)+pw/2,Y0+hh/2,15,600,ink,'center'));T('พัก',px(5)-bw/2,Y0+hh/2,15,600,ink,'center');
+R(px(5)-bw+4,Y0+hh+4,bw-8,5*rh-4,10,'#bcd3ee');x.save();x.translate(px(5)-bw/2,Y0+hh+2.5*rh);x.rotate(-Math.PI/2);T('พักกลางวัน 12:00–13:00',0,0,16,600,'#3b5a85','center');x.restore();
+D.forEach((d,i)=>{const y=Y0+hh+i*rh;R(X0,y+4,dw-6,rh-8,12,COL[i+1]);T(d,X0+dw/2-3,y+rh/2,20,700,ink,'center',dw-16);
+for(let p=1;p<=8;p++)R(px(p)+3,y+4,pw-6,rh-8,10,'#ffffffb8');
+f.filter(s=>s.day==i+1).forEach(s=>{const X=px(s.period),w=s.len*pw-6,m=w-24;R(X+3,y+4,w,rh-8,12,COL[+s.c.slice(1)%8]);
+T(nm(db.courses,s.c,'course_id'),X+14,y+30,19,700,ink,'left',m);T(kind=='t'?nm(db.groups,s.g,'group_id'):nm(db.teachers,s.t,'teacher_id'),X+14,y+58,14,400,'#33473b','left',m);T(kind=='room'?nm(db.groups,s.g,'group_id'):nm(db.rooms,s.room,'room_id'),X+14,y+80,14,400,'#33473b','left',m)})});
+const fy=H-48;R(70,fy-24,220,48,24,'#fff');T(name,180,fy,18,700,'#14346b','center');const n=f.reduce((a,s)=>a+s.len,0);R(W-290,fy-24,220,48,24,'#fff');T(f.length+' ครั้งเรียน · '+n+' คาบ',W-180,fy,16,600,'#14346b','center');
+const b=await new Promise(r=>c.toBlob(r,'image/png'));sv('ตารางเรียน-'+name.replace(/[\/\\]/g,'-')+'.png',b)}
+function cp(t){try{navigator.clipboard.writeText(t);msg='คัดลอกแล้ว'}catch(e){msg='คัดลอกไม่ได้'}draw()}
+const sc=()=>'offering_id,day,period,room_id,length\n'+sol.map(s=>[s.o,s.day,s.period,s.room,s.len].join()).join('\n');
+const fc=()=>'วัน,คาบ,จำนวนคาบ,วิชา,กลุ่ม,ครู,ห้อง\n'+sol.slice().sort((a,b)=>a.day-b.day||a.period-b.period).map(s=>[D[s.day-1],s.period,s.len,nm(db.courses,s.c,'course_id'),nm(db.groups,s.g,'group_id'),nm(db.teachers,s.t,'teacher_id'),nm(db.rooms,s.room,'room_id')].join()).join('\n');
+function grid(){const f=sol.filter(s=>tab=='g'?s.g==sel:tab=='t'?s.t==sel:s.room==sel);let h='<div class="wrap tt"><table><tr><th>เวลา</th>'+TM.map((t,i)=>(i==4?'<th>พัก</th>':'')+'<th>'+t+'</th>').join('')+'</tr>';
+D.forEach((d,di)=>{h+='<tr><td class="d" style="background:'+COL[di+1]+'">'+d+'</td>';for(let p=1;p<=8;p++){if(p==5)h+=di?'':'<td rowspan="5" style="background:var(--l);color:var(--m);width:34px">พัก</td>';
+if(f.some(s=>s.day==di+1&&s.period<p&&s.period+s.len>p))continue;const s=f.find(s=>s.day==di+1&&s.period==p);
+h+=s?'<td class="s" colspan="'+s.len+'" style="background:'+COL[+s.c.slice(1)%8]+'">'+nm(db.courses,s.c,'course_id')+'<small>'+nm(db.teachers,s.t,'teacher_id')+' · '+nm(db.rooms,s.room,'room_id')+(tab=='g'?'':' · '+nm(db.groups,s.g,'group_id'))+'</small></td>':'<td></td>'}h+='</tr>'});return h+'</table></div>'}
+function draw(){if(!auth){lg();return}$('#lg').style.display='none';foot();$('#nv').innerHTML=['นำเข้าข้อมูล','จัดตาราง','ดูตาราง','ส่งออก'].map((n,i)=>'<div class="st '+(step==i+1?'on':sol&&i>0&&i<3||i==3&&sol||!i&&db.groups?'ok':'')+'" onclick="go('+(i+1)+')"><i>'+(step==i+1||(i&&sol)||(!i&&db.groups)?'✓':i+1)+'</i>'+n+'</div>').join('');
+let h='';
+if(step==1){const have=F.filter(([k])=>db[k]).length;h='<h2>นำเข้าข้อมูล</h2><p class="sub">เลือกไฟล์ CSV ทั้ง 10 ไฟล์ของโจทย์ ระบบจะตรวจว่าครบและแสดงตัวอย่างข้อมูลให้ดู</p><div class="card drop" onclick="$(\'#f\').click()"><b>ลากไฟล์มาวางที่นี่ หรือคลิกเพื่อเลือกไฟล์</b><br><small style="color:var(--m)">เลือกไฟล์ .csv ได้หลายไฟล์พร้อมกัน</small><input id="f" type="file" accept=".csv" multiple hidden onchange="load(this.files)"></div><div class="two"><div class="card" style="padding:4px">'+F.map(([k,n])=>'<div class="row '+(pv==k?'on':'')+'" onclick="pv=\''+k+'\';draw()"><span>'+k+'.csv<br><small>'+n+'</small></span><small>'+(db[k]?db[k].length+' แถว':'ยังไม่มีไฟล์')+'</small></div>').join('')+'</div><div class="card wrap">'+(pv&&db[pv]&&db[pv].length?'<table><tr>'+Object.keys(db[pv][0]).map(x=>'<th>'+x+'</th>').join('')+'</tr>'+db[pv].slice(0,8).map(r=>'<tr>'+Object.values(r).map(x=>'<td style="height:auto">'+x+'</td>').join('')+'</tr>').join('')+'</table>':'<p style="text-align:center;color:var(--m);margin-top:100px">เลือกไฟล์ทางซ้ายเพื่อดูตัวอย่างข้อมูล</p>')+'</div></div><p><button class="btn" '+(have<10?'disabled':'')+' onclick="go(2)">ไปจัดตาราง</button> <button class="btn o" onclick="sample();pv=\'groups\';draw()">ใช้ข้อมูลตัวอย่าง</button> <small style="color:var(--m)">'+(have<10?'ยังขาด '+(10-have)+' ไฟล์':'ครบแล้ว')+'</small></p>'}
+if(step==2){h='<h2>จัดตาราง</h2><p class="sub">ระบบจะจัดทุกครั้งเรียนให้ผ่านเงื่อนไขบังคับครบก่อน</p><div class="card"><button class="btn" onclick="run()">จัดตารางใหม่</button> <small style="color:var(--m)">'+(db.groups?'':'ยังไม่ได้นำเข้าข้อมูล')+'</small>'+(msg&&'<p style="background:var(--l);padding:10px;border-radius:8px"><b>'+msg+'</b></p>')+'</div>'+(sol?'<div class="stats">'+[['ครั้งเรียน',sol.length],['คาบรวม',sol.reduce((a,s)=>a+s.len,0)],['ครู',db.teachers.length],['ห้อง',db.rooms.length]].map(x=>'<div><b class="cnt" data-n="'+x[1]+'">0</b><small>'+x[0]+'</small></div>').join('')+'</div><h3>ผลตรวจเงื่อนไขบังคับ</h3><div class="chk">'+chk.map((c,i)=>'<div class="'+(c[1]?'':'bad')+'"><b style="color:'+(c[1]?'var(--g)':'#d33')+'">'+(c[1]?'✓':'✗')+'</b><span>'+String(i+1).padStart(2,'0')+' '+c[0]+'<small>'+c[2]+'</small></span></div>').join('')+'</div>':'')}
+if(step==3){if(!sol)h='<h2>ดูตาราง</h2><p class="sub">ยังไม่มีตาราง กรุณาจัดตารางก่อน</p>';else{const L={g:db.groups.map(x=>[x.group_id,x.name]),t:db.teachers.map(x=>[x.teacher_id,x.name]),r:db.rooms.map(x=>[x.room_id,x.name])}[tab=='g'?'g':tab=='t'?'t':'r'],key={g:'g',t:'t',r:'room'}[tab];
+if(!L.some(x=>x[0]==sel))sel=L[0][0];const n=id=>sol.filter(s=>s[key]==id).reduce((a,s)=>a+s.len,0);
+h='<h2>ดูตาราง</h2><div class="tabs">'+[['g','รายกลุ่ม'],['t','รายครู'],['r','รายห้อง']].map(([k,n])=>'<span class="'+(tab==k?'on':'')+'" onclick="tab=\''+k+'\';sel=null;draw()">'+n+'</span>').join('')+'</div><div class="two"><div><input type="text" placeholder="ค้นหา" value="'+q+'" oninput="q=this.value;draw();this.focus()">'+L.filter(x=>x[1].includes(q)).map(x=>'<div class="row '+(sel==x[0]?'on':'')+'" onclick="sel=\''+x[0]+'\';draw()"><b>'+x[1]+'</b><small>'+n(x[0])+' คาบ</small></div>').join('')+'</div><div><h3 style="margin-top:0">'+L.find(x=>x[0]==sel)[1]+' <small style="color:var(--m);font-weight:400">'+n(sel)+' คาบ</small></h3><p style="margin:0 0 12px"><button class="btn" onclick="png(\''+key+'\',\''+sel+'\')">⬇ ดาวน์โหลดเป็นรูป PNG</button></p>'+grid()+'</div></div>'}}
+if(step==4){h='<h2>ส่งออก</h2><p class="sub">ดาวน์โหลดผลการจัดตารางไปส่งหรือเปิดดูต่อ</p>'+(!sol?'<p>ยังไม่มีตาราง</p>':'<div class="ex"><div class="card"><b>solution.csv</b><br><small>ไฟล์คำตอบ 1 แถวต่อ 1 ครั้งเรียน</small><br><button class="btn" onclick="dl(\'solution.csv\',sc())">ดาวน์โหลด</button><button class="btn o" onclick="cp(sc())">คัดลอก</button></div><div class="card"><b>ตารางทั้งหมด (CSV)</b><br><small>พร้อมชื่อวิชา กลุ่ม ครู ห้อง เปิดใน Excel ได้</small><br><button class="btn" onclick="dl(\'timetable.csv\',fc())">ดาวน์โหลด</button><button class="btn o" onclick="cp(fc())">คัดลอก</button></div><div class="card"><b>ตารางรายกลุ่ม (PNG)</b><br><small>เลือกกลุ่ม แล้วดาวน์โหลดเป็นรูปภาพ</small><br><select id="pg">'+db.groups.map(g=>'<option value="'+g.group_id+'">'+g.name+'</option>').join('')+'</select><button class="btn" onclick="png(\'g\',$(\'#pg\').value)">ดาวน์โหลดรูป PNG</button></div></div><p style="color:var(--g)">'+msg+'</p>')}
+$('#m').innerHTML=h;const sg=step+'|'+tab+'|'+sel+'|'+!!sol;if(sg!=lsg){lsg=sg;ani()}}
+function go(n){if(n>1&&!db.groups)return;step=n;msg='';draw()}
+let auth=0,busy=0,lsg='',ti=0;try{auth=sessionStorage.getItem('sc')=='1';ti=+localStorage.getItem('sct')||0}catch(e){}
+const TH=[['เขียว',['#1b6b43','#2e9a63','#d9efe0','#dbe6de','#f3f8f4','#c9efdb'],['#4cc38a','#2e9a63','#1f3a2b','#2a3d32','#101a14','#18241d']],['ฟ้า',['#1d4ed8','#3b82f6','#dbeafe','#d6e0f2','#f2f6fd','#bfdbfe'],['#6ea8ff','#3b82f6','#1e2f55','#2a3a5c','#0f1626','#151f33']],['ม่วง',['#6d28d9','#8b5cf6','#ede9fe','#e0daf3','#f6f3fd','#ddd6fe'],['#a78bfa','#8b5cf6','#2e2350','#3b3060','#14101f','#1b1630']],['ส้ม',['#c2410c','#f97316','#ffedd5','#f1dfd0','#fdf7f2','#fed7aa'],['#fb923c','#f97316','#43271a','#523525','#1a120e','#241a14']],['ชมพู',['#be185d','#ec4899','#fce7f3','#f1d9e5','#fdf3f8','#fbcfe8'],['#f472b6','#ec4899','#4a1f37','#5a2d47','#1a0f15','#26151e']]];
+ti=1;const LOGO='<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="9" width="28" height="26" rx="7"/><path d="M6 17h28M14 4v8M26 4v8M14 25l4 4 8-8"/></svg>';
+function applyT(){const d=matchMedia('(prefers-color-scheme:dark)').matches,v=TH[ti][d?2:1],s=document.documentElement.style;['--g','--g2','--l','--b','--bg'].forEach((k,j)=>s.setProperty(k,v[j]));s.setProperty('--glow',d?v[2]:v[5]);if(d)s.setProperty('--c',v[5])}
+function setT(i){ti=i;try{localStorage.setItem('sct',i)}catch(e){}applyT();foot();toast('เปลี่ยนเป็นธีม'+TH[i][0])}
+function foot(){$('#nf').innerHTML='<div class="sw">'+TH.map((t,i)=>'<b title="'+t[0]+'" class="'+(ti==i?'on':'')+'" style="background:linear-gradient(135deg,'+t[1][0]+','+t[1][1]+')" onclick="setT('+i+')"></b>').join('')+'</div><div class="us"><span class="av">A</span><span>admin<small>ผู้ดูแลระบบ</small></span></div><button class="btn o" onclick="out()">ออกจากระบบ</button>'}
+function lg(){const e=$('#lg');e.style.display='grid';if(!e.firstChild){e.innerHTML='<div class="card lc"><div class="lo">'+LOGO+'</div><h2 style="text-align:center">Tarang Reian</h2><p class="sub" style="text-align:center">ระบบจัดตารางเรียน · เข้าสู่ระบบ</p><div class="hint" onclick="$(\'#lu\').value=\'admin\';$(\'#lp\').value=\'12345\'"><b>ทดลองเข้าใช้งาน</b><br>ชื่อผู้ใช้: <code>admin</code> · รหัสผ่าน: <code>12345</code><small>แตะที่กล่องนี้เพื่อกรอกให้อัตโนมัติ</small></div><label>ชื่อผู้ใช้</label><input id="lu" autocomplete="username" onkeydown="if(event.key==\'Enter\')$(\'#lp\').focus()"><label>รหัสผ่าน</label><input id="lp" type="password" autocomplete="current-password" onkeydown="if(event.key==\'Enter\')login()"><div id="le" style="color:#d33;min-height:20px;font-size:13px"></div><button class="btn" style="width:100%" onclick="login()">เข้าสู่ระบบ</button></div>'}$('#lu').value=$('#lp').value='';$('#le').textContent='';$('#nv').innerHTML='';$('#nf').innerHTML='';$('#m').innerHTML=''}
+function login(){const c=$('.lc');if($('#lu').value.trim()==='admin'&&$('#lp').value==='12345'){auth=1;try{sessionStorage.setItem('sc','1')}catch(e){}$('#lg').classList.add('bye');setTimeout(()=>{$('#lg').classList.remove('bye');lsg='';draw();toast('ยินดีต้อนรับ ผู้ดูแลระบบ')},400)}else{$('#le').textContent='ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';c.classList.remove('shake');void c.offsetWidth;c.classList.add('shake')}}
+function out(){auth=0;try{sessionStorage.removeItem('sc')}catch(e){}step=1;draw()}
+function toast(m,er){const t=document.createElement('div');t.className='toast'+(er?' er':'');t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2800)}
+function boom(){for(let i=0;i<80;i++){const e=document.createElement('i');e.className='cf';e.style.cssText='left:'+Math.random()*100+'vw;background:'+COL[i%8]+';animation-delay:'+Math.random()*.6+'s;animation-duration:'+(1.8+Math.random()*1.6)+'s;border-radius:'+(i%3?'2px':'50%');document.body.appendChild(e);setTimeout(()=>e.remove(),4200)}}
+function ani(){const m=$('#m');m.classList.remove('pg');void m.offsetWidth;m.classList.add('pg');m.querySelectorAll('.chk div,.stats div').forEach((e,i)=>e.style.animationDelay=i*45+'ms');m.querySelectorAll('.cnt').forEach(e=>{const n=+e.dataset.n,t0=performance.now();(function f(t){const k=Math.min(1,(t-t0)/900);e.textContent=Math.round(n*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f)})(t0)});setTimeout(()=>m.classList.remove('pg'),1200)}
+function run(){if(!db.groups||busy)return;busy=1;sol=null;msg='';draw();$('#m').insertAdjacentHTML('beforeend','<div class="ld"><i></i></div>');setTimeout(()=>{const ok=solve();msg=ok?(validate(),'จัดตารางสำเร็จ '+sol.length+' ครั้งเรียน'):'จัดไม่สำเร็จ ข้อมูลอาจตึงเกินไป ลองใหม่หรือปรับข้อมูล';busy=0;lsg='';draw();toast(msg,!ok);if(ok)boom()},900)}
+applyT();
+function load(fs){[...fs].forEach(f=>{const k=f.name.replace(/\.csv$/i,'');if(!F.some(x=>x[0]==k))return;const r=new FileReader();r.onload=()=>{db[k]=csv(r.result);pv=k;if(db.groups)sol=null;draw()};r.readAsText(f)})}
+draw();
+</script></body></html>
