@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tarang Reian | ระบบจัดตารางเรียนอัตโนมัติ</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%231e6fe0'/%3E%3Cpath d='M7 12.5l3 3 7-7' stroke='white' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0b2545;--mute:#4f6b8a;--glass:rgba(255,255,255,.58);--gb:rgba(255,255,255,.75);--line:rgba(30,111,224,.16);--a1:#4aa8ff;--a2:#1e6fe0;--a3:#0a49b3;--bad:#c62828;--ok:#16794a;--warn:#9a5b00;--chip:rgba(30,111,224,.1);--bg1:#e9f5ff;--bg2:#cfe6ff;--bg3:#f2f8ff;--sh:0 8px 32px rgba(30,111,224,.14);--cs:62%;--cl:86%;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--ink:#e6f1ff;--mute:#9bb4d1;--glass:rgba(16,36,62,.58);--gb:rgba(120,170,230,.22);--line:rgba(120,170,230,.22);--a1:#5fb4ff;--a2:#3f8cf0;--a3:#8cc0ff;--bad:#ff8a80;--ok:#6fd49a;--warn:#f0b35a;--chip:rgba(95,180,255,.14);--bg1:#071427;--bg2:#0c2442;--bg3:#0a1a30;--sh:0 8px 32px rgba(0,0,0,.4);--cs:40%;--cl:26%;color-scheme:dark}}
+*{box-sizing:border-box}html{scroll-padding-top:90px}
+body{margin:0;min-height:100vh;color:var(--ink);font:400 15px/1.6 "Noto Sans Thai",system-ui,sans-serif;background:linear-gradient(135deg,var(--bg1),var(--bg2) 55%,var(--bg3));background-attachment:fixed;overflow-x:hidden}
+.orbs{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.orb{position:absolute;border-radius:50%;filter:blur(60px);opacity:.55;animation:fl 24s ease-in-out infinite alternate}
+.o1{width:420px;height:420px;background:#7cc4ff;left:-80px;top:-60px}.o2{width:360px;height:360px;background:#3f8cf0;right:-60px;top:30%;animation-duration:30s}.o3{width:300px;height:300px;background:#a9d8ff;left:35%;bottom:-80px;animation-duration:27s}
+@keyframes fl{to{transform:translate(70px,50px) scale(1.12)}}
+@media (prefers-color-scheme:dark){.orb{opacity:.28}}
+.glass{background:var(--glass);backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);border:1px solid var(--gb);border-radius:18px;box-shadow:var(--sh)}
+h1,h2,h3{margin:0}.sub{color:var(--mute);margin:0}
+button{font:inherit;cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--a2);outline-offset:2px}
+.btn{border:1px solid var(--line);background:var(--glass);color:var(--ink);border-radius:99px;padding:8px 18px;font-weight:500;transition:transform .15s}
+.btn:hover:not(:disabled){transform:translateY(-1px)}
+.btn.p{border:0;color:#fff;font-weight:600;background:linear-gradient(135deg,var(--a1),var(--a2) 60%,var(--a3));box-shadow:0 6px 18px rgba(30,111,224,.35)}
+.btn.sm{padding:5px 13px;font-size:13px}.btn:disabled{opacity:.45;cursor:not-allowed}
+input[type=text],input[type=password],input[type=number],select{width:100%;font:inherit;color:var(--ink);background:var(--glass);border:1px solid var(--line);border-radius:12px;padding:9px 12px}
+label.f{display:block;font-weight:500;font-size:14px;margin-bottom:12px}label.f>input,label.f>select{margin-top:5px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.logo{width:52px;height:52px;border-radius:15px;background:linear-gradient(135deg,var(--a1),var(--a3));display:grid;place-items:center;box-shadow:0 8px 20px rgba(30,111,224,.35)}
+.logo svg{width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.gt{background:linear-gradient(90deg,var(--a2),var(--a1));-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:700}
+/* login */
+#login{min-height:100vh;display:grid;place-items:center;padding:20px}
+.lc{display:grid;grid-template-columns:1.1fr 1fr;width:100%;max-width:880px;overflow:hidden;padding:0}
+.brand{padding:40px 36px;background:linear-gradient(150deg,rgba(74,168,255,.9),rgba(10,73,179,.92));color:#fff;display:flex;flex-direction:column;gap:14px;justify-content:center}
+.brand .logo{background:rgba(255,255,255,.2);box-shadow:none}.brand h1{font-size:30px;line-height:1.2}.brand p{margin:0;opacity:.9}
+.brand ul{margin:6px 0 0;padding-left:18px;opacity:.92;font-size:14px}
+.fm{padding:40px 34px;background:var(--glass)}.fm h2{font-size:22px;margin-bottom:4px}
+.hint{margin-top:16px;padding:11px 14px;border-radius:12px;background:var(--chip);width:100%;text-align:left;border:1px dashed var(--a2);color:var(--ink)}
+.hint small{display:block;color:var(--mute)}.err{min-height:22px;color:var(--bad);font-size:14px;margin:0 0 8px}
+.shake{animation:sh .45s}@keyframes sh{20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
+@media(max-width:700px){.lc{grid-template-columns:1fr}.brand{padding:24px}.brand ul{display:none}}
+/* app */
+.nav{position:sticky;top:max(10px,env(safe-area-inset-top));z-index:20;margin:10px auto 0;max-width:1180px;width:calc(100% - 24px);padding:8px 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-radius:99px}
+.nav .logo{width:36px;height:36px;border-radius:11px}.nav .logo svg{width:20px;height:20px}
+.tabs{display:flex;gap:4px;flex:1;overflow-x:auto;scrollbar-width:none}.tab{border:0;background:none;color:var(--mute);padding:7px 14px;border-radius:99px;white-space:nowrap;font-weight:500}
+.tab[aria-current=page]{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff}.tab:disabled{opacity:.4;cursor:not-allowed}
+.wrap{max-width:1180px;margin:0 auto;padding:18px 12px calc(40px + env(safe-area-inset-bottom))}
+.hero{display:flex;align-items:center;gap:16px;padding:18px 22px;margin-bottom:14px;background:linear-gradient(120deg,rgba(74,168,255,.25),rgba(255,255,255,0))}
+.hero .logo{flex:none}.hero h2{font-size:26px}.card{padding:18px 20px;margin-bottom:14px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:12px 0}
+.cards div{padding:10px 14px;border-radius:14px;background:var(--chip);color:var(--mute);font-size:13px}.cards b{display:block;font-size:26px;color:var(--ink)}
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin-top:10px}
+.slot{padding:11px 13px;border-radius:14px;border:1px solid var(--line);background:var(--glass);font-size:13px}.slot.ok{border-color:var(--ok)}.slot code{color:var(--a2)}
+.tag{font-size:11px;border-radius:99px;padding:0 8px;background:var(--chip);color:var(--a2);margin-left:4px}
+.drop{border:2px dashed var(--a1);border-radius:16px;padding:18px;text-align:center;background:var(--chip)}.drop.on{background:rgba(74,168,255,.3)}
+.ok{color:var(--ok)}.bad{color:var(--bad)}.warn{color:var(--warn)}small,.mut{color:var(--mute)}
+.bar{height:12px;border-radius:99px;background:var(--chip);overflow:hidden;margin:12px 0 6px}.bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--a1),var(--a2));transition:width .15s}
+.sc{overflow-x:auto}table{border-collapse:collapse;width:100%}
+.pv th,.pv td{border-bottom:1px solid var(--line);padding:5px 9px;font-size:13px;text-align:left;white-space:nowrap}.pv th{color:var(--mute);font-weight:500}
+.tt{min-width:760px;table-layout:fixed}.tt th,.tt td{border:1px solid var(--line);padding:4px;vertical-align:top;font-size:13px}.tt th{background:var(--chip);font-weight:500}
+th.t{width:92px;color:var(--mute);font-size:12px}.tt td{height:60px}td.brk{height:26px;text-align:center;color:var(--mute);font-size:12px;background:var(--chip)}
+.cell{background:hsl(var(--h) var(--cs) var(--cl));border-radius:9px;padding:4px 7px;height:100%;line-height:1.3}.cell b{display:block;font-weight:600}.cell i{font-style:normal;color:var(--mute);font-size:12px;display:block}
+.chk{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:8px;margin-top:10px}.chk div{padding:8px 12px;border-radius:12px;background:var(--chip);font-size:14px}
+.chk small{display:block}.seg{display:flex;border:1px solid var(--line);border-radius:99px;overflow:hidden}.seg button{border:0;background:none;color:var(--ink);padding:7px 16px}.seg button[aria-pressed=true]{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff}
+.banner{border-radius:14px;padding:12px 16px;border:1px solid var(--line);margin:10px 0}.banner.okb{border-color:var(--ok)}.banner.wb{border-color:var(--warn)}
+.askbar{background:var(--chip);border-radius:12px;padding:10px 14px;margin:10px 0}
+#toasts{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:8px;z-index:50}
+.toast{padding:10px 16px;border-radius:12px;max-width:320px;animation:ti .25s;border-left:4px solid var(--a2)}.toast.ok{border-left-color:var(--ok)}.toast.bad{border-left-color:var(--bad)}.toast.warn{border-left-color:var(--warn)}@keyframes ti{from{opacity:0;transform:translateY(10px)}}
+#cf{position:fixed;inset:0;pointer-events:none;z-index:60}
+[hidden]{display:none!important}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(max-width:640px){.hero h2{font-size:21px}.nav{border-radius:20px}}
+</style>
+</head>
+<body>
+<div class="orbs" aria-hidden="true"><i class="orb o1"></i><i class="orb o2"></i><i class="orb o3"></i></div>
+<main id="login">
+ <div class="glass lc" id="lcard">
+  <section class="brand">
+   <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18M8.5 15.5l2.5 2.5 4.5-5"/></svg></div>
+   <h1>Tarang Reian</h1><p>ระบบจัดตารางเรียนอัตโนมัติ</p>
+   <ul><li>นำเข้าข้อมูล CSV ได้ทั้ง 10 ไฟล์</li><li>จัดตารางพร้อมตรวจเงื่อนไข 12 ข้อ</li><li>ส่งออกเป็น CSV และรูปภาพ</li></ul>
+  </section>
+  <section class="fm">
+   <h2>เข้าสู่ระบบ</h2><p class="sub" style="margin-bottom:18px">กรอกข้อมูลเพื่อเริ่มใช้งาน</p>
+   <label class="f">ชื่อผู้ใช้<input id="user" type="text" autocomplete="username" autocapitalize="none"></label>
+   <label class="f">รหัสผ่าน<input id="pass" type="password" autocomplete="current-password"></label>
+   <p class="err" id="err" role="alert"></p>
+   <button class="btn p" style="width:100%" id="go" type="button">เข้าสู่ระบบ</button>
+   <button class="hint" id="fill" type="button"><b>แตะเพื่อกรอกอัตโนมัติ</b><small>ชื่อผู้ใช้ admin · รหัสผ่าน 12345</small></button>
+  </section>
+ </div>
+</main>
+<div id="app" hidden>
+ <nav class="nav glass" aria-label="เมนูหลัก">
+  <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18M8.5 15.5l2.5 2.5 4.5-5"/></svg></div>
+  <b class="gt" style="font-size:17px">Tarang Reian</b>
+  <div class="tabs" id="tabs"></div>
+  <button class="btn sm" id="out">ออกจากระบบ</button>
+ </nav>
+ <div class="wrap" id="pg"></div>
+</div>
+<div id="toasts" role="status" aria-live="polite"></div><canvas id="cf" aria-hidden="true"></canvas>
+<script type="text/plain" id="core">
+function rng(s){s=s>>>0;return function(){s=(s+0x6D2B79F5)>>>0;var t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+var DAYN=['จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์'];
+var CNAME=['คณิตศาสตร์','ภาษาไทย','ภาษาอังกฤษ','วิทยาศาสตร์','สังคมศึกษา','พลศึกษา','ศิลปะ','คอมพิวเตอร์'];
+var TNAME=['สมชาย','สมหญิง','วิชัย','นภา','ประเสริฐ','ศิริพร','อนุชา','กัลยา','ธีรพงษ์','มาลี','สุรชัย','จินตนา','พิชิต','อรุณี','ณรงค์','วรรณา','ชัยวัฒน์','รัตนา','สมศักดิ์','พรทิพย์'];
+/* ---------- ข้อมูลตัวอย่าง: n กลุ่ม ---------- */
+function gen(n){var P=function(p,i,w){return p+String(i+1).padStart(w||3,'0')},T={groups:[],teachers:[],rooms:[],courses:[],offerings:[],timeslots:[],blocked_slots:[],fixed_sessions:[],students:[],enrollments:[]};
+ var spec=[[0,2,1],[1,2,1],[2,2,1],[3,1,3],[4,1,2],[5,1,2],[6,1,1],[7,1,2]],pool=Math.ceil(n/4),lab=[0,0,0,1,0,0,0,1];
+ for(var i=0;i<n;i++)T.groups.push({group_id:P('G',i,2),name:'ม.'+(1+Math.floor(i/4))+'/'+(1+i%4),size:28+(i*7)%9});
+ CNAME.forEach(function(c,i){T.courses.push({course_id:P('C',i,2),name:c,room_type:lab[i]?'lab':'normal'})});
+ var tn=0;for(var c=0;c<8;c++)for(var k=0;k<pool;k++){T.teachers.push({teacher_id:P('T',tn),name:'ครู'+TNAME[tn%20]+(tn>=20?' '+(1+Math.floor(tn/20)):''),max_periods:24});tn++}
+ var nn=Math.max(3,Math.ceil(n/2)+2),nl=Math.max(2,Math.ceil(n/4));
+ for(i=0;i<nn;i++)T.rooms.push({room_id:P('R',i),name:'ห้อง '+(101+i),capacity:40,type:'normal'});
+ for(i=0;i<nl;i++)T.rooms.push({room_id:P('R',nn+i),name:'ห้องปฏิบัติการ '+(i+1),capacity:40,type:'lab'});
+ var tm=[['08:30','09:20','class'],['09:20','10:10','class'],['10:10','11:00','class'],['11:00','11:50','class'],['11:50','12:50','lunch'],['12:50','13:40','class'],['13:40','14:30','class'],['14:30','15:20','class'],['15:20','16:10','class']];
+ tm.forEach(function(x,i){T.timeslots.push({slot_id:i+1,start:x[0],end:x[1],type:x[2]})});
+ var oid=0,pe={},fx=0,ctr={},nfix=Math.max(2,Math.floor(n*0.75)),sid=0;
+ for(var g=0;g<n;g++){var gs=T.groups[g].size;
+  for(var j=0;j<spec.length;j++){var sp=spec[j],tid=T.teachers[sp[0]*pool+(g%pool)].teacher_id,o=P('O',oid++);
+   T.offerings.push({offering_id:o,group_id:T.groups[g].group_id,course_id:P('C',sp[0],2),teacher_id:tid,sessions_per_week:sp[1],block_len:sp[2]});
+   if(sp[0]==5&&g<nfix){var cnt=ctr[tid]||0;ctr[tid]=cnt+1;T.fixed_sessions.push({offering_id:o,session_no:1,day:[1,2,4,5][cnt%4],start_slot:6,room_id:g==0?P('R',0):''})}
+   if(sp[0]==0&&g==0)T.fixed_sessions.push({offering_id:o,session_no:1,day:1,start_slot:1,room_id:''});
+   pe[g+'|'+j]=o}
+  for(var s=0;s<gs;s++){var st=P('S',sid++,4);T.students.push({student_id:st,name:'นักเรียน '+(sid),group_id:T.groups[g].group_id});for(j=0;j<spec.length;j++)T.enrollments.push({student_id:st,offering_id:pe[g+'|'+j]})}}
+ T.teachers.forEach(function(t,i){if(i%4==1)for(var s=6;s<=9;s++)T.blocked_slots.push({owner_type:'teacher',owner_id:t.teacher_id,day:3,slot_id:s,reason:'ประชุมกลุ่มสาระ'})});
+ for(s=1;s<=2;s++)T.blocked_slots.push({owner_type:'room',owner_id:T.rooms[nn].room_id,day:5,slot_id:s,reason:'ซ่อมบำรุง'});
+ T.blocked_slots.push({owner_type:'group',owner_id:T.groups[0].group_id,day:5,slot_id:9,reason:'กิจกรรมชุมนุม'});
+ return T}
+/* ---------- สร้างโมเดลและตรวจข้อมูล ---------- */
+function prep(T){var E=[],W=[],G=function(k){return T[k]||[]},num=function(v){v=String(v==null?'':v).trim();return v!==''&&isFinite(v)?+v:NaN};
+ ['groups','teachers','rooms','courses','offerings','timeslots'].forEach(function(k){if(!G(k).length)E.push('ยังไม่มีไฟล์ '+k+'.csv')});if(E.length)return{E:E,W:W};
+ var M={slots:[],sIdx:{},g:{},gl:[],t:{},tl:[],r:{},rooms:[],c:{},off:{},offs:[],ses:[],bl:{teacher:{},room:{},group:{}},fix:{},days:5,nStu:G('students').length,fixN:0};
+ function ids(k,key,fn){var seen={};G(k).forEach(function(r,i){var id=String(r[key]||'').trim();if(!id)return E.push(k+'.csv แถว '+(i+2)+': ไม่มี '+key+' → ใส่รหัสให้ครบ');if(seen[id])return E.push(k+'.csv: '+key+' '+id+' ซ้ำ → ทำให้รหัสไม่ซ้ำกัน');seen[id]=1;fn(id,r,i)})}
+ G('timeslots').forEach(function(r,i){var id=num(r.slot_id);if(!(id>0))E.push('timeslots.csv แถว '+(i+2)+': slot_id ต้องเป็นตัวเลข');else M.slots.push({id:id,start:r.start,end:r.end,lunch:/พัก|lunch/i.test(r.type)})});
+ M.slots.sort(function(a,b){return a.id-b.id});M.slots.forEach(function(s,i){M.sIdx[s.id]=i});
+ var run=0,mx=0;M.slots.forEach(function(s){run=s.lunch?0:run+1;mx=Math.max(mx,run)});M.maxRun=mx;
+ ids('groups','group_id',function(id,r,i){var z=num(r.size);if(!(z>0))E.push('groups.csv แถว '+(i+2)+': size ต้องเป็นตัวเลขมากกว่า 0');M.g[id]={id:id,n:r.name,size:z};M.gl.push(M.g[id])});
+ ids('teachers','teacher_id',function(id,r,i){var z=num(r.max_periods);if(!(z>0))E.push('teachers.csv แถว '+(i+2)+': max_periods ต้องเป็นตัวเลขมากกว่า 0');M.t[id]={id:id,n:r.name,max:z};M.tl.push(M.t[id])});
+ ids('rooms','room_id',function(id,r,i){var z=num(r.capacity);if(!(z>0))E.push('rooms.csv แถว '+(i+2)+': capacity ต้องเป็นตัวเลขมากกว่า 0');M.r[id]=M.rooms.length;M.rooms.push({id:id,n:r.name,cap:z,lab:/lab|ปฏิบัติ/i.test(r.type)?1:0})});
+ ids('courses','course_id',function(id,r){M.c[id]={id:id,n:r.name,lab:/lab|ปฏิบัติ/i.test(r.room_type)?1:0,i:Object.keys(M.c).length}});
+ var cnt={};G('enrollments').forEach(function(r,i){cnt[r.offering_id]=(cnt[r.offering_id]||0)+1});
+ G('students').forEach(function(r,i){if(!M.g[r.group_id])E.push('students.csv แถว '+(i+2)+': ไม่พบกลุ่ม '+r.group_id)});
+ ids('offerings','offering_id',function(id,r,i){var g=M.g[r.group_id],c=M.c[r.course_id],t=M.t[r.teacher_id],s=num(r.sessions_per_week),L=num(r.block_len||1);
+  if(!g||!c||!t)return E.push('offerings.csv แถว '+(i+2)+' ('+id+'): ไม่พบรหัสกลุ่ม วิชา หรือครู ('+r.group_id+', '+r.course_id+', '+r.teacher_id+') → ตรวจรหัสให้ตรงกับไฟล์อื่น');
+  if(!(s>=1&&s<=M.days))return E.push('offerings.csv ('+id+'): sessions_per_week ต้องอยู่ระหว่าง 1-'+M.days+' (ครั้งซ้ำต้องคนละวัน)');
+  if(!(L>=1))return E.push('offerings.csv ('+id+'): block_len ต้องเป็นตัวเลข 1 ขึ้นไป');
+  if(L>M.maxRun)return E.push('offerings.csv ('+id+'): คาบติดกัน '+L+' ยาวกว่าช่วงเรียนที่ไม่มีพัก ('+M.maxRun+') → ลด block_len');
+  var o={id:id,g:g.id,c:c.id,t:t.id,s:s,len:L,lab:c.lab,size:cnt[id]||g.size,i:M.offs.length};M.off[id]=o;M.offs.push(o);for(var n=1;n<=s;n++)M.ses.push({o:o,n:n,len:L,key:id+'#'+n})});
+ G('blocked_slots').forEach(function(r,i){var ty=String(r.owner_type).trim(),d=num(r.day),si=M.sIdx[num(r.slot_id)];if(!M.bl[ty])return W.push('blocked_slots.csv แถว '+(i+2)+': owner_type ต้องเป็น teacher, room หรือ group (ข้ามแถวนี้)');
+  var ok=ty=='teacher'?M.t[r.owner_id]:ty=='room'?M.r[r.owner_id]!=null:M.g[r.owner_id];if(!ok)return W.push('blocked_slots.csv แถว '+(i+2)+': ไม่พบรหัส '+r.owner_id+' (ข้ามแถวนี้)');
+  if(!(d>=1&&d<=M.days)||si==null)return W.push('blocked_slots.csv แถว '+(i+2)+': day หรือ slot_id ไม่ถูกต้อง (ข้ามแถวนี้)');
+  var b=M.bl[ty][r.owner_id]=M.bl[ty][r.owner_id]||{};b[(d-1)+'|'+si]=1});
+ var fo={},fday={};G('fixed_sessions').forEach(function(r,i){var o=M.off[r.offering_id],n=num(r.session_no),d=num(r.day),si=M.sIdx[num(r.start_slot)],lb='fixed_sessions.csv แถว '+(i+2)+': ';
+  if(!o)return E.push(lb+'ไม่พบ offering_id '+r.offering_id);if(!(n>=1&&n<=o.s))return E.push(lb+o.id+' session_no ต้องอยู่ระหว่าง 1-'+o.s);
+  if(!(d>=1&&d<=M.days)||si==null)return E.push(lb+'day หรือ start_slot ไม่ถูกต้อง');
+  for(var p=si;p<si+o.len;p++)if(p>=M.slots.length||M.slots[p].lunch)return E.push(lb+o.id+' คาบที่ล็อกคร่อมพักเที่ยวหรือเกินวัน → เลือกคาบเริ่มใหม่');
+  var ri=r.room_id?M.r[r.room_id]:null;if(r.room_id&&ri==null)return E.push(lb+'ไม่พบห้อง '+r.room_id);
+  if(ri!=null&&(M.rooms[ri].lab!=o.lab||M.rooms[ri].cap<o.size))return E.push(lb+'ห้อง '+r.room_id+' ไม่ตรงประเภทหรือจุไม่พอสำหรับ '+o.id);
+  if(fday[o.id+'|'+d])return E.push(lb+o.id+' ล็อกสองครั้งในวันเดียวกัน');fday[o.id+'|'+d]=1;
+  var key=o.id+'#'+n;if(fo[key])return E.push(lb+key+' ถูกล็อกซ้ำ');fo[key]=1;
+  var isB=function(ty,id,dd,pp){return M.bl[ty][id]&&M.bl[ty][id][dd+'|'+pp]};
+  for(p=si;p<si+o.len;p++)if(isB('teacher',o.t,d-1,p)||isB('group',o.g,d-1,p)||(ri!=null&&isB('room',M.rooms[ri].id,d-1,p)))return E.push(lb+key+' ชนกับเวลาที่ถูกบล็อก → ย้ายคาบที่ล็อก');
+  M.fix[key]={d:d-1,si:si,ri:ri};M.fixN++});
+ var seen={};Object.keys(M.fix).forEach(function(k){var f=M.fix[k],o=M.off[k.split('#')[0]];for(var p=f.si;p<f.si+o.len;p++)[['t',o.t],['g',o.g]].concat(f.ri!=null?[['r',f.ri]]:[]).forEach(function(x){var kk=x[0]+x[1]+'|'+f.d+'|'+p;if(seen[kk])E.push('คาบที่ล็อกชนกัน: '+k+' กับ '+seen[kk]+' ('+x[0]+')');seen[kk]=k})});
+ var tl={},gl={};M.offs.forEach(function(o){tl[o.t]=(tl[o.t]||0)+o.s*o.len;gl[o.g]=(gl[o.g]||0)+o.s*o.len;
+  var best=0;M.rooms.forEach(function(r){if(r.lab==o.lab)best=Math.max(best,r.cap)});if(!best)E.push('ไม่มีห้องประเภท '+(o.lab?'ปฏิบัติการ':'ทั่วไป')+' สำหรับ '+o.id+' → เพิ่มห้องในไฟล์ rooms');else if(best<o.size)E.push(o.id+': นักเรียน '+o.size+' คน เกินความจุห้องที่ใหญ่ที่สุด ('+best+') → เพิ่มห้องใหญ่ขึ้น')});
+ Object.keys(tl).forEach(function(t){if(tl[t]>M.t[t].max)E.push('ครู '+M.t[t].n+': ต้องสอน '+tl[t]+' คาบ เกินภาระสูงสุด '+M.t[t].max+' → เพิ่มครูหรือเพิ่ม max_periods')});
+ Object.keys(gl).forEach(function(g){if(gl[g]>7*M.days)E.push('กลุ่ม '+M.g[g].n+': '+gl[g]+' คาบ เกินที่ไม่เกิน 7 คาบ/วัน ('+7*M.days+' คาบ) → ลดจำนวนคาบ')});
+ M.starts={};M.offs.forEach(function(o){if(!M.starts[o.len]){var a=[];for(var s=0;s+o.len<=M.slots.length;s++){var ok=1;for(var p=s;p<s+o.len;p++)if(M.slots[p].lunch)ok=0;if(ok)a.push(s)}M.starts[o.len]=a}});
+ M.tlSessions=M.ses.length;return{M:M,E:E,W:W}}
+/* ---------- ตัวจัดตาราง ---------- */
+function attempt(M,R,post){var occT={},occR={},occG={},gDay={},tLoad={},oDays={},rows=[],un=[],placed=0,K=function(a,d,s){return a+'|'+d+'|'+s},isB=function(ty,id,d,p){var b=M.bl[ty][id];return b&&b[d+'|'+p]};
+ function room(se,d,si,want){var o=se.o,best=-1,bc=1e9;for(var ri=0;ri<M.rooms.length;ri++){var r=M.rooms[ri];if(r.lab!=o.lab||r.cap<o.size||(want!=null&&ri!=want))continue;var ok=1;for(var p=si;p<si+se.len;p++)if(occR[K(ri,d,p)]||isB('room',r.id,d,p)){ok=0;break}if(ok&&r.cap<bc){bc=r.cap;best=ri}}return best}
+ function can(se,d,si){var o=se.o,L=se.len;if(si+L>M.slots.length||oDays[o.id+'|'+d]||(gDay[o.g+'|'+d]||0)+L>7||(tLoad[o.t]||0)+L>M.t[o.t].max)return false;
+  for(var p=si;p<si+L;p++){if(M.slots[p].lunch||occT[K(o.t,d,p)]||occG[K(o.g,d,p)]||isB('teacher',o.t,d,p)||isB('group',o.g,d,p))return false}return true}
+ function put(se,d,si,ri){var o=se.o;for(var p=si;p<si+se.len;p++){occT[K(o.t,d,p)]=1;occG[K(o.g,d,p)]=1;occR[K(ri,d,p)]=1;rows.push({offering_id:o.id,session_no:se.n,day:d+1,period:M.slots[p].id,room_id:M.rooms[ri].id,teacher_id:o.t,group_id:o.g})}
+  oDays[o.id+'|'+d]=1;gDay[o.g+'|'+d]=(gDay[o.g+'|'+d]||0)+se.len;tLoad[o.t]=(tLoad[o.t]||0)+se.len;placed++;if(post&&placed%10==0)post(placed)}
+ var fixed=[],rest=[];M.ses.forEach(function(se){(M.fix[se.key]?fixed:rest).push(se)});
+ fixed.forEach(function(se){var f=M.fix[se.key],ok=can(se,f.d,f.si),ri=ok?room(se,f.d,f.si,f.ri):-1;if(ri<0)un.push(se);else put(se,f.d,f.si,ri)});
+ rest.forEach(function(se){se.k=-se.len*10-(se.o.lab?3:0)-R()*4});rest.sort(function(a,b){return a.k-b.k});
+ rest.forEach(function(se){var cs=[];M.starts[se.len].forEach(function(si){for(var d=0;d<M.days;d++)cs.push([d,si,(gDay[se.o.g+'|'+d]||0)*2.2+R()*3+si*.05])});
+  cs.sort(function(a,b){return a[2]-b[2]});for(var i=0;i<cs.length;i++){var d=cs[i][0],si=cs[i][1];if(!can(se,d,si))continue;var ri=room(se,d,si,null);if(ri>=0){put(se,d,si,ri);return}}un.push(se)});
+ return{rows:rows,un:un,placed:placed}}
+function drive(M,seed,opt,post,sched){var t0=Date.now(),maxA=opt.maxAttempts||400,maxMs=opt.maxMs||20000,best=null,i=0,tot=M.ses.length;
+ (function loop(){var t1=Date.now();
+  while(i<maxA&&Date.now()-t0<maxMs&&Date.now()-t1<60){var a=i+1,r=attempt(M,rng(seed*1000003+i*7919+1),function(p){post({type:'p',placed:p,total:tot,attempt:a,ms:Date.now()-t0})});i++;if(!best||r.un.length<best.un.length)best=r;
+   post({type:'p',placed:tot-best.un.length,total:tot,attempt:i,ms:Date.now()-t0});if(!best.un.length)break}
+  if(!best.un.length||i>=maxA||Date.now()-t0>=maxMs)post({type:'done',rows:best.rows,un:best.un.map(function(s){return{offering_id:s.o.id,session_no:s.n}}),attempts:i,ms:Date.now()-t0,total:tot});else sched(loop)})()}
+/* ---------- ตรวจเงื่อนไข 12 ข้อ ---------- */
+var CHECKS=['ครูไม่สอนชนกัน','ห้องไม่ถูกใช้ซ้อนกัน','กลุ่มเรียนไม่เรียนชนกัน','ห้องตรงประเภทและจุได้พอ','ไม่คร่อมพักเที่ยง','คาบติดกันครบตามที่กำหนด','จัดครบทุกครั้งเรียน','ครั้งซ้ำอยู่คนละวัน','ครูไม่เกินภาระสอน','กลุ่มเรียนไม่เกิน 7 คาบ/วัน','เคารพเวลาที่ถูกบล็อก','คาบที่ล็อกตรงเป๊ะ'];
+function check(M,raw){var bad=CHECKS.map(function(){return[]}),add=function(i,m){bad[i].push(m)},rows=[],K=function(a,d,s){return a+'|'+d+'|'+s};
+ raw.forEach(function(r,i){var o=M.off[r.offering_id],d=+r.day-1,si=M.sIdx[+r.period],ri=M.r[r.room_id];if(!o||!(d>=0&&d<M.days)||si==null||ri==null)return add(6,'แถว '+(i+2)+': ข้อมูลไม่ถูกต้อง ('+r.offering_id+', วัน '+r.day+', คาบ '+r.period+', ห้อง '+r.room_id+')');rows.push({o:o,n:+r.session_no,d:d,si:si,ri:ri})});
+ var oT={},oR={},oG={},tl={},gd={},ses={};
+ rows.forEach(function(x){var o=x.o,room=M.rooms[x.ri],kt=K(o.t,x.d,x.si),kr=K(x.ri,x.d,x.si),kg=K(o.g,x.d,x.si),nm=o.id+'#'+x.n;
+  if(oT[kt])add(0,'ครู '+M.t[o.t].n+' ชนวัน'+DAYN[x.d]+' คาบ '+M.slots[x.si].id+' ('+oT[kt]+' กับ '+nm+')');oT[kt]=nm;
+  if(oR[kr])add(1,'ห้อง '+room.n+' ซ้อนวัน'+DAYN[x.d]+' คาบ '+M.slots[x.si].id+' ('+oR[kr]+' กับ '+nm+')');oR[kr]=nm;
+  if(oG[kg])add(2,'กลุ่ม '+M.g[o.g].n+' ชนวัน'+DAYN[x.d]+' คาบ '+M.slots[x.si].id+' ('+oG[kg]+' กับ '+nm+')');oG[kg]=nm;
+  if(room.lab!=o.lab)add(3,nm+' ใช้ห้อง '+room.n+' ผิดประเภท');else if(room.cap<o.size)add(3,nm+' ห้อง '+room.n+' จุ '+room.cap+' ไม่พอสำหรับ '+o.size+' คน');
+  if(M.slots[x.si].lunch)add(4,nm+' วางในช่วงพักเที่ยง');
+  tl[o.t]=(tl[o.t]||0)+1;gd[o.g+'|'+x.d]=(gd[o.g+'|'+x.d]||0)+1;
+  var b=function(ty,id){var q=M.bl[ty][id];return q&&q[x.d+'|'+x.si]};if(b('teacher',o.t)||b('group',o.g)||b('room',M.rooms[x.ri].id))add(10,nm+' ตรงกับเวลาที่ถูกบล็อก (วัน'+DAYN[x.d]+' คาบ '+M.slots[x.si].id+')');
+  (ses[nm]=ses[nm]||[]).push(x)});
+ M.offs.forEach(function(o){var days={};for(var n=1;n<=o.s;n++){var a=ses[o.id+'#'+n];if(!a){add(6,o.id+' ครั้งที่ '+n+' ยังไม่ถูกจัด');continue}
+  a.sort(function(p,q){return p.si-q.si});var ok=a.length==o.len&&a.every(function(x){return x.d==a[0].d&&x.ri==a[0].ri});for(var j=1;j<a.length&&ok;j++)if(a[j].si!=a[j-1].si+1||M.slots[a[j].si].lunch)ok=false;
+  if(!ok)add(5,o.id+'#'+n+': ต้องเรียนติดกัน '+o.len+' คาบในห้องเดียวกัน แต่พบ '+a.length+' คาบไม่ต่อเนื่อง');
+  if(days[a[0].d])add(7,o.id+' ครั้งที่ '+n+' ซ้ำวัน'+DAYN[a[0].d]);days[a[0].d]=1;
+  var f=M.fix[o.id+'#'+n];if(f&&(a[0].d!=f.d||a[0].si!=f.si||(f.ri!=null&&a[0].ri!=f.ri)))add(11,o.id+'#'+n+' ต้องอยู่วัน'+DAYN[f.d]+' คาบ '+M.slots[f.si].id+' แต่ถูกวางที่วัน'+DAYN[a[0].d]+' คาบ '+M.slots[a[0].si].id)}});
+ Object.keys(ses).forEach(function(k){var p=k.split('#'),o=M.off[p[0]];if(o&&(+p[1]<1||+p[1]>o.s))add(6,k+': เกินจำนวนครั้งต่อสัปดาห์ของ '+o.id)});
+ Object.keys(tl).forEach(function(t){if(tl[t]>M.t[t].max)add(8,'ครู '+M.t[t].n+' สอน '+tl[t]+' คาบ เกิน '+M.t[t].max)});
+ Object.keys(gd).forEach(function(k){if(gd[k]>7){var p=k.split('|');add(9,'กลุ่ม '+M.g[p[0]].n+' เรียน '+gd[k]+' คาบในวัน'+DAYN[p[1]]+' (เกิน 7)')}});
+ return CHECKS.map(function(n,i){return{n:n,ok:!bad[i].length,c:bad[i].length,m:bad[i].slice(0,3)}})}
+</script>
+<script>
+const coreText=document.getElementById('core').textContent;
+const C=new Function(coreText+';return{gen:gen,prep:prep,drive:drive,check:check,CHECKS:CHECKS,DAYN:DAYN}')();
+const $=id=>document.getElementById(id),DAYN=C.DAYN;
+const SPEC=[
+{k:'groups',t:'กลุ่มเรียน',m:['group_id','size'],h:['group_id','name','size'],req:1},
+{k:'teachers',t:'ครู',m:['max_periods'],h:['teacher_id','name','max_periods'],req:1},
+{k:'rooms',t:'ห้อง',m:['capacity'],h:['room_id','name','capacity','type'],req:1},
+{k:'courses',t:'วิชา',m:['room_type'],h:['course_id','name','room_type'],req:1},
+{k:'offerings',t:'การเปิดสอน',m:['sessions_per_week'],h:['offering_id','group_id','course_id','teacher_id','sessions_per_week','block_len'],req:1},
+{k:'timeslots',t:'คาบเรียน',m:['slot_id','start'],h:['slot_id','start','end','type'],req:1},
+{k:'blocked_slots',t:'เวลาที่ถูกบล็อก',m:['owner_type'],h:['owner_type','owner_id','day','slot_id','reason']},
+{k:'fixed_sessions',t:'คาบที่ล็อก',m:['start_slot'],h:['offering_id','session_no','day','start_slot','room_id']},
+{k:'students',t:'นักเรียน',m:['student_id','group_id'],h:['student_id','name','group_id']},
+{k:'enrollments',t:'การลงทะเบียน',m:['student_id','offering_id'],h:['student_id','offering_id']}];
+const DET=['enrollments','fixed_sessions','blocked_slots','offerings','timeslots','rooms','courses','teachers','students','groups'].map(k=>SPEC.find(s=>s.k==k));
+/* ---------- เครื่องมือ ---------- */
+function toast(m,t){const e=document.createElement('div');e.className='toast glass '+(t||'');e.textContent=m;$('toasts').appendChild(e);setTimeout(()=>e.remove(),t=='bad'?6500:3800)}
+function countUp(el,to,ms){if(!el)return;const t0=performance.now();ms=ms||700;(function f(n){const p=Math.min(1,(n-t0)/ms);el.textContent=Math.round(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)})(t0)}
+function confetti(){if(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches)return;const c=$('cf'),x=c.getContext('2d');if(!x)return;c.width=innerWidth;c.height=innerHeight;
+ const ps=[...Array(150)].map(()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.5,vx:(Math.random()-.5)*3,vy:2+Math.random()*4,s:6+Math.random()*7,r:Math.random()*6,vr:(Math.random()-.5)*.3,h:190+Math.random()*80}));let f=0;
+ (function t(){x.clearRect(0,0,c.width,c.height);ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle='hsl('+p.h+',85%,60%)';x.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);x.restore()});if(++f<170)requestAnimationFrame(t);else x.clearRect(0,0,c.width,c.height)})()}
+function parseCSV(t){t=t.replace(/^\uFEFF/,'');let rows=[],r=[],c='',q=0;
+ for(let i=0;i<t.length;i++){const ch=t[i];if(q){if(ch=='"'){if(t[i+1]=='"'){c+='"';i++}else q=0}else c+=ch}else if(ch=='"')q=1;else if(ch==','){r.push(c);c=''}
+  else if(ch=='\n'||ch=='\r'){if(ch=='\r'&&t[i+1]=='\n')i++;r.push(c);c='';rows.push(r);r=[]}else c+=ch}
+ if(c||r.length){r.push(c);rows.push(r)}rows=rows.filter(x=>x.some(y=>y.trim()));if(!rows.length)return{h:[],rows:[]};
+ const h=rows.shift().map(x=>x.trim());return{h,rows:rows.map(x=>Object.fromEntries(h.map((k,i)=>[k,(x[i]||'').trim()])))}}
+const qc=v=>/[",\n]/.test(v=String(v==null?'':v))?'"'+v.replace(/"/g,'""')+'"':v;
+const toCSV=(h,rows)=>'\uFEFF'+[h.join(','),...rows.map(r=>h.map(k=>qc(r[k])).join(','))].join('\n');
+function dl(name,data,type){const a=document.createElement('a');a.href=URL.createObjectURL(data instanceof Blob?data:new Blob([data],{type:type||'text/csv;charset=utf-8'}));a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
+function crc32(b){let t=crc32.t;if(!t){t=crc32.t=[];for(let n=0,c;n<256;n++){c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}}let r=-1;for(let i=0;i<b.length;i++)r=t[(r^b[i])&255]^(r>>>8);return(r^-1)>>>0}
+function zipParts(files){const e=new TextEncoder(),out=[],cd=[],u16=v=>[v&255,v>>8&255],u32=v=>[v&255,v>>8&255,v>>16&255,v>>>24&255];let off=0;
+ files.forEach(([n,t])=>{const nb=e.encode(n),db=e.encode(t),c=crc32(db),m=[...u16(0x800),...u16(0),...u16(0),...u16(0x21),...u32(c),...u32(db.length),...u32(db.length),...u16(nb.length),...u16(0)];
+  const lh=new Uint8Array([0x50,0x4b,3,4,...u16(20),...m]);out.push(lh,nb,db);cd.push(new Uint8Array([0x50,0x4b,1,2,...u16(20),...u16(20),...m,...u16(0),...u16(0),...u16(0),...u32(0),...u32(off)]),nb);off+=lh.length+nb.length+db.length});
+ const cs=cd.reduce((a,x)=>a+x.length,0);return[...out,...cd,new Uint8Array([0x50,0x4b,5,6,0,0,0,0,...u16(files.length),...u16(files.length),...u32(cs),...u32(off),0,0])]}
+const demoFiles=n=>{const T=C.gen(n||8);return SPEC.map(s=>[s.k+'.csv',toCSV(s.h,T[s.k])])};
+const tb=(h,r)=>'<div class="sc"><table class="pv"><tr>'+h.map(x=>'<th>'+x+'</th>').join('')+'</tr>'+r.map(x=>'<tr>'+h.map(k=>'<td>'+(x[k]==null?'':x[k])+'</td>').join('')+'</tr>').join('')+'</table></div>';
+const hero=(ic,t,s)=>'<div class="glass hero"><div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24">'+ic+'</svg></div><div><h2 class="gt">'+t+'</h2><p class="sub">'+s+'</p></div></div>';
+/* ---------- สถานะ ---------- */
+let T={},M=null,E=[],W=[],res=null,hist=[],pgi=1,prev={},view={mode:'group',sel:0,q:''},usedWorker=null,running=false;
+const have=()=>SPEC.filter(s=>s.req).every(s=>(T[s.k]||[]).length);
+const ready=()=>M&&!E.length;
+function refresh(){M=null;E=[];W=[];res=null;if(have()){const P=C.prep(T);M=P.M;E=P.E;W=P.W}else E=SPEC.filter(s=>s.req&&!(T[s.k]||[]).length).map(s=>'ยังไม่มีไฟล์ '+s.k+'.csv ('+s.t+')')}
+/* ---------- ล็อกอิน ---------- */
+const sget=k=>{try{return sessionStorage.getItem(k)}catch(e){return null}},sset=(k,v)=>{try{v===null?sessionStorage.removeItem(k):sessionStorage.setItem(k,v)}catch(e){}};
+function doLogin(){const u=$('user').value.trim(),p=$('pass').value;
+ if(u!=='admin'||p!=='12345'){$('err').textContent=!u||!p?'กรอกชื่อผู้ใช้และรหัสผ่านให้ครบ':'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';const c=$('lcard');c.classList.remove('shake');void c.offsetWidth;c.classList.add('shake');return}
+ $('err').textContent='';sset('tr_user','admin');enter()}
+function enter(){$('login').hidden=true;$('app').hidden=false;show(1)}
+$('go').onclick=doLogin;$('fill').onclick=()=>{$('user').value='admin';$('pass').value='12345';$('err').textContent='';$('go').focus()};
+['user','pass'].forEach(i=>$(i).onkeydown=e=>{if(e.key=='Enter')doLogin()});
+$('out').onclick=()=>{sset('tr_user',null);$('app').hidden=true;$('login').hidden=false;$('pass').value=''};
+/* ---------- เมนู ---------- */
+const NAMES=['1. นำเข้าข้อมูล','2. จัดตาราง','3. ดูตาราง','4. ส่งออก','5. ตรวจสอบ'];
+const can=i=>i==1||i==5||(i==2&&ready())||((i==3||i==4)&&res&&res.rows.length>0);
+function show(i){pgi=i;$('tabs').innerHTML=NAMES.map((n,j)=>'<button class="tab" '+(j+1==i?'aria-current="page" ':'')+(can(j+1)?'':'disabled ')+'onclick="show('+(j+1)+')">'+n+'</button>').join('');[p1,p2,p3,p4,p5][i-1]();scrollTo(0,0)}
+function ask(msg,fn){if(!Object.keys(T).length)return fn();window._ask=fn;$('ask').innerHTML='<div class="askbar" role="alertdialog">'+msg+'<div class="row" style="margin-top:8px"><button class="btn sm p" onclick="window._ask()">ยืนยัน</button><button class="btn sm" onclick="$(\'ask\').innerHTML=\'\'">ยกเลิก</button></div></div>'}
+/* ---------- หน้า 1 นำเข้า ---------- */
+const IC1='<path d="M12 3v12M7 10l5 5 5-5M4 19h16"/>',IC2='<path d="M5 3l14 9-14 9z"/>',IC3='<rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 10h18M9 4v17"/>',IC4='<path d="M12 15V3M7 8l5-5 5 5M4 19h16"/>',IC5='<path d="M20 6L9 17l-5-5"/>';
+function p1(){const n=SPEC.filter(s=>(T[s.k]||[]).length).length,nr=SPEC.filter(s=>s.req&&(T[s.k]||[]).length).length;
+ $('pg').innerHTML=hero(IC1,'นำเข้าข้อมูล','อัปโหลดไฟล์ CSV (UTF-8) ทั้ง 10 ไฟล์พร้อมกัน ระบบแยกชนิดไฟล์จากหัวคอลัมน์ให้เอง')+
+ '<div class="glass card"><div class="drop" id="drop"><label style="font-weight:500">เลือกหรือลากไฟล์ CSV มาวางที่นี่<input id="fi" type="file" accept=".csv,text/csv" multiple style="display:block;margin:10px auto 0"></label></div>'+
+ '<div class="row" style="margin-top:12px"><button class="btn p" onclick="ask(\'โหลดข้อมูลตัวอย่างจะแทนที่ข้อมูลเดิมทั้งหมด\',()=>useGen(8))">ใช้ข้อมูลตัวอย่าง</button><span class="mut">ชุดทดสอบ:</span>'+[[2,'เล็ก 2 กลุ่ม'],[8,'กลาง 8 กลุ่ม'],[20,'ใหญ่ 20 กลุ่ม']].map(x=>'<button class="btn sm" onclick="ask(\'โหลดชุดทดสอบจะแทนที่ข้อมูลเดิมทั้งหมด\',()=>useGen('+x[0]+'))">'+x[1]+'</button>').join('')+'<button class="btn sm" onclick="getZip()">ดาวน์โหลดตัวอย่าง CSV 10 ไฟล์ (ZIP)</button>'+(n?'<button class="btn sm" onclick="ask(\'ล้างข้อมูลและผลการจัดตารางทั้งหมด\',clr)">ล้างข้อมูล</button>':'')+'</div><div id="ask"></div><div id="msg" style="margin-top:8px;font-size:14px"></div></div>'+
+ '<div class="glass card"><b>สถานะไฟล์ '+n+' / 10</b> <span class="mut">(ไฟล์จำเป็น '+nr+' / 6)</span><div class="slots">'+SPEC.map(s=>{const r=T[s.k]||[];return '<div class="slot'+(r.length?' ok':'')+'"><b>'+s.t+'</b><span class="tag">'+(s.req?'จำเป็น':'ไม่บังคับ')+'</span><br><code>'+s.k+'.csv</code><div class="'+(r.length?'ok':s.req?'bad':'mut')+'">'+(r.length?'✓ '+r.length+' แถว':s.req?'ยังขาดไฟล์นี้':'ไม่ใช้ (ข้ามได้)')+'</div>'+(r.length?'<button class="btn sm" onclick="pv(\''+s.k+'\')">'+(prev[s.k]?'ซ่อนตัวอย่าง':'ดูตัวอย่าง')+'</button>':'')+'</div>'}).join('')+'</div>'+
+ SPEC.filter(s=>prev[s.k]&&(T[s.k]||[]).length).map(s=>'<h3 style="margin:14px 0 4px;font-size:15px">'+s.t+' (5 แถวแรก)</h3>'+tb(s.h,T[s.k].slice(0,5))).join('')+'</div>'+
+ '<div class="glass card"><b>ผลตรวจข้อมูล</b>'+(!have()?'<p class="mut">นำเข้าไฟล์จำเป็นให้ครบก่อน จึงจะตรวจข้อมูลได้</p>':
+ (E.length?'<div class="bad"><b>ต้องแก้ก่อนจัดตาราง ('+E.length+')</b><ul>'+E.slice(0,12).map(x=>'<li>'+x+'</li>').join('')+'</ul>'+(E.length>12?'<small>และอีก '+(E.length-12)+' รายการ</small>':'')+'</div>':
+  '<p class="ok">✓ ข้อมูลครบและไม่พบข้อขัดแย้งที่ทำให้จัดไม่ได้</p><div class="cards"><div><b id="c1">0</b>กลุ่มเรียน</div><div><b id="c2">0</b>ครู</div><div><b id="c3">0</b>ห้อง</div><div><b id="c4">0</b>ครั้งเรียน</div><div><b id="c5">0</b>คาบที่ล็อก</div></div>')+
+  (W.length?'<div class="warn"><b>ข้อควรรู้ ('+W.length+')</b><ul>'+W.slice(0,6).map(x=>'<li>'+x+'</li>').join('')+'</ul></div>':''))+
+  '<div class="row" style="margin-top:12px"><button class="btn p" '+(ready()?'':'disabled ')+'onclick="show(2)">ไปขั้นจัดตาราง</button></div></div>';
+ if(ready()){countUp($('c1'),M.gl.length);countUp($('c2'),M.tl.length);countUp($('c3'),M.rooms.length);countUp($('c4'),M.ses.length);countUp($('c5'),M.fixN)}
+ $('fi').onchange=e=>load([...e.target.files]);const d=$('drop');d.ondragover=e=>{e.preventDefault();d.classList.add('on')};d.ondragleave=()=>d.classList.remove('on');d.ondrop=e=>{e.preventDefault();d.classList.remove('on');load([...e.dataTransfer.files])}}
+function pv(k){prev[k]=!prev[k];p1()}
+function useGen(n){T=C.gen(n);prev={};refresh();show(1);$('msg').innerHTML='<span class="ok">✓ โหลดข้อมูลตัวอย่าง '+n+' กลุ่มแล้ว</span>';toast('โหลดข้อมูลตัวอย่าง '+n+' กลุ่มแล้ว','ok')}
+function clr(){T={};prev={};hist=hist;refresh();show(1)}
+function getZip(){dl('tarang-reian-sample-data.zip',new Blob(zipParts(demoFiles(8)),{type:'application/zip'}));$('msg').innerHTML='<span class="mut">เริ่มดาวน์โหลด tarang-reian-sample-data.zip แล้ว (CSV 10 ไฟล์) หากไม่มีไฟล์ขึ้น เบราว์เซอร์อาจบล็อกการดาวน์โหลด</span>'}
+function load(fs){if(!fs.length)return;let n=fs.length;const ok=[],bad=[],rep=[],seen={};
+ fs.forEach(f=>{const rd=new FileReader();rd.onload=()=>{const p=parseCSV(String(rd.result)),sp=DET.find(s=>s.m.every(h=>p.h.includes(h)));
+  if(!sp)bad.push(f.name+': หัวคอลัมน์ไม่ตรงกับไฟล์ชนิดใดของระบบ');else if(!p.rows.length)bad.push(f.name+' ('+sp.t+'): ไม่มีข้อมูลสักแถว');
+  else{if(seen[sp.k])rep.push(f.name+' ซ้ำชนิด “'+sp.t+'” กับ '+seen[sp.k]+' ใช้ไฟล์หลังสุด');else if((T[sp.k]||[]).length)rep.push(f.name+' แทนที่ข้อมูล “'+sp.t+'” เดิม');seen[sp.k]=f.name;T[sp.k]=p.rows;ok.push(f.name+' → '+sp.t+' ('+p.rows.length+' แถว)')}
+  if(--n==0){refresh();p1();$('msg').innerHTML=(ok.length?'<div class="ok">✓ นำเข้า '+ok.length+' ไฟล์<br><small>'+ok.join('<br>')+'</small></div>':'')+(rep.length?'<div class="warn">แจ้งเตือน<br><small>'+rep.join('<br>')+'</small></div>':'')+(bad.length?'<div class="bad">นำเข้าไม่ได้ ('+bad.length+')<br><small>'+bad.join('<br>')+'<br>ตรวจชื่อคอลัมน์ และบันทึกเป็น CSV UTF-8</small></div>':'');if(ok.length)toast('นำเข้า '+ok.length+' ไฟล์','ok');if(bad.length)toast('มี '+bad.length+' ไฟล์นำเข้าไม่ได้','bad')}};rd.readAsText(f,'UTF-8')})}
+/* ---------- ตัวจัดตาราง (Web Worker) ---------- */
+function solveP(Tt,seed,onP){return new Promise(resolve=>{let fin=0;const msg=m=>{if(fin)return;if(m.type=='done'||m.type=='err')fin=1;if(m.type=='p'){onP&&onP(m)}else resolve(m)};
+ const fb=()=>{usedWorker=false;const P=C.prep(Tt);if(!P.M)return msg({type:'err',E:P.E});C.drive(P.M,seed,{},msg,f=>setTimeout(f,0))};
+ const src=coreText+';onmessage=function(e){var P=prep(e.data.T);if(!P.M){postMessage({type:"err",E:P.E});return}drive(P.M,e.data.seed,e.data.opt,function(m){postMessage(m)},function(f){setTimeout(f,0)})}';
+ let w;try{w=new Worker(URL.createObjectURL(new Blob([src],{type:'text/javascript'})));usedWorker=true;w.onmessage=e=>{msg(e.data);if(e.data.type=='done'||e.data.type=='err')w.terminate()};w.onerror=()=>{w.terminate();if(!fin)fb()};w.postMessage({T:Tt,seed,opt:{}})}catch(e){fb()}})}
+const rnd=()=>Math.floor(Math.random()*900000)+100000;
+function p2(){$('pg').innerHTML=hero(IC2,'จัดตาราง','คำนวณใน Web Worker ใส่ Seed เดิมเพื่อให้ได้ผลซ้ำเดิมทุกครั้ง')+
+ '<div class="glass card"><div class="row"><label class="f" style="margin:0;width:200px">Seed<input id="seed" type="number" value="'+(window._seed||2024)+'"></label><button class="btn sm" onclick="$(\'seed\').value=rnd()">สุ่ม Seed ใหม่</button><button class="btn p" id="run" onclick="runNow()">เริ่มจัดตาราง</button></div>'+
+ '<div class="bar"><i id="pb"></i></div><div id="ps" role="status" class="mut">พร้อมจัดตาราง ('+M.ses.length+' ครั้งเรียน)</div></div><div id="rb"></div><div id="hs"></div>';showRes();showHist()}
+async function runNow(){if(running)return;running=true;$('run').disabled=true;const seed=+$('seed').value||0;window._seed=seed;$('rb').innerHTML='';
+ const m=await solveP(T,seed,p=>{$('pb').style.width=Math.round(p.placed/p.total*100)+'%';$('ps').textContent='วางแล้ว '+p.placed+'/'+p.total+' ครั้งเรียน · รอบที่ '+p.attempt+' · '+(p.ms/1000).toFixed(2)+' วินาที'});
+ running=false;$('run').disabled=false;if(m.type=='err'){$('ps').innerHTML='<span class="bad">จัดไม่ได้: '+m.E.slice(0,3).join(' / ')+'</span>';return toast('ข้อมูลมีปัญหา จัดตารางไม่ได้','bad')}
+ $('pb').style.width=Math.round((m.total-m.un.length)/m.total*100)+'%';$('ps').textContent='เสร็จแล้ว: วางได้ '+(m.total-m.un.length)+'/'+m.total+' ครั้งเรียน · '+m.attempts+' รอบ · '+(m.ms/1000).toFixed(2)+' วินาที · '+(usedWorker?'Web Worker':'โหมดสำรอง (เธรดหลัก)');
+ const chk=C.check(M,m.rows),pass=chk.filter(x=>x.ok).length;res={rows:m.rows,un:m.un,total:m.total,attempts:m.attempts,ms:m.ms,seed,chk,pass};
+ hist.unshift({n:hist.length+1,seed,g:M.gl.length,placed:m.total-m.un.length,total:m.total,at:m.attempts,ms:m.ms,pass});show(2);
+ if(pass==12&&!m.un.length){confetti();toast('จัดตารางสำเร็จ ผ่านครบ 12 ข้อ','ok')}else toast('ยังจัดไม่สมบูรณ์ ผ่าน '+pass+'/12 ข้อ','warn')}
+function chkHTML(c){return '<div class="chk">'+c.map((x,i)=>'<div><span class="'+(x.ok?'ok':'bad')+'">'+(x.ok?'✓':'✗')+'</span> '+(i+1)+'. '+x.n+(x.ok?'':' <b class="bad">('+x.c+' จุด)</b>')+x.m.map(t=>'<small>'+t+'</small>').join('')+'</div>').join('')+'</div>'}
+function showRes(){if(!res)return;const full=res.pass==12&&!res.un.length;$('pb').style.width=Math.round((res.total-res.un.length)/res.total*100)+'%';
+ $('rb').innerHTML='<div class="glass card"><div class="banner '+(full?'okb':'wb')+'"><b class="'+(full?'ok':'warn')+'">'+(full?'จัดครบทุกครั้งเรียน ผ่านครบ 12 ข้อ':'ยังจัดไม่สมบูรณ์')+'</b><div class="cards"><div><b id="r1">0</b>วางได้ (จาก '+res.total+')</div><div><b id="r2">0</b>ครั้งเรียนที่จัดไม่ได้</div><div><b id="r3">0</b>เงื่อนไขที่ผ่าน (จาก 12)</div><div><b id="r4">0</b>รอบที่ลอง</div></div><small>Seed '+res.seed+' · ใช้เวลา '+(res.ms/1000).toFixed(2)+' วินาที</small></div>'+
+ (res.un.length?'<p class="bad">จัดไม่ได้: '+res.un.slice(0,12).map(u=>{const o=M.off[u.offering_id];return M.c[o.c].n+' ('+M.g[o.g].n+') ครั้งที่ '+u.session_no}).join(', ')+(res.un.length>12?' …':'')+'<br><small>ลองเปลี่ยน Seed เพิ่มห้อง/ครู หรือผ่อนเวลาที่บล็อก</small></p>':'')+chkHTML(res.chk)+'<div class="row" style="margin-top:12px"><button class="btn p" onclick="show(3)">ดูตาราง</button><button class="btn" onclick="show(4)">ส่งออก</button></div></div>';
+ countUp($('r1'),res.total-res.un.length);countUp($('r2'),res.un.length);countUp($('r3'),res.pass);countUp($('r4'),res.attempts)}
+function showHist(){$('hs').innerHTML=hist.length?'<div class="glass card"><b>ประวัติการรัน</b>'+tb(['n','seed','g','placed','at','ms','pass'].map(x=>x),hist.map(h=>({n:'#'+h.n,seed:h.seed,g:h.g+' กลุ่ม',placed:h.placed+'/'+h.total,at:h.at+' รอบ',ms:(h.ms/1000).toFixed(2)+' วินาที',pass:h.pass+'/12'}))).replace('<th>n</th>','<th>ครั้งที่</th>').replace('<th>seed</th>','<th>Seed</th>').replace('<th>g</th>','<th>ขนาด</th>').replace('<th>placed</th>','<th>วางได้</th>').replace('<th>at</th>','<th>รอบ</th>').replace('<th>ms</th>','<th>เวลา</th>').replace('<th>pass</th>','<th>ผ่านเงื่อนไข</th>')+'</div>':''}
+/* ---------- หน้า 3 ดูตาราง ---------- */
+const hue=oid=>(M.c[M.off[oid].c].i*47+12)%360;
+function entList(){return view.mode=='group'?M.gl.map(g=>[g.id,g.n]):view.mode=='teacher'?M.tl.map(t=>[t.id,t.n]):M.rooms.map(r=>[r.id,r.n])}
+function p3(){$('pg').innerHTML=hero(IC3,'ดูตาราง','สลับดูรายกลุ่ม รายครู หรือรายห้อง สีตามวิชา')+'<div class="glass card"><div class="row" style="margin-bottom:12px"><div class="seg">'+[['group','รายกลุ่ม'],['teacher','รายครู'],['room','รายห้อง']].map(x=>'<button aria-pressed="'+(view.mode==x[0])+'" onclick="setMode(\''+x[0]+'\')">'+x[1]+'</button>').join('')+'</div><input type="text" id="q" placeholder="ค้นหาชื่อ" value="'+view.q+'" style="width:180px" aria-label="ค้นหา"><select id="sel" style="width:auto;min-width:160px" aria-label="เลือก"></select></div><div class="sc"><table class="tt" id="tbl"></table></div></div>';
+ $('q').oninput=e=>{view.q=e.target.value;fillSel()};$('sel').onchange=e=>{view.sel=e.target.value;draw()};fillSel()}
+function setMode(m){view.mode=m;view.sel=0;view.q='';p3()}
+function fillSel(){const L=entList().filter(x=>x[1].includes(view.q));$('sel').innerHTML=L.length?L.map(x=>'<option value="'+x[0]+'">'+x[1]+'</option>').join(''):'<option value="">ไม่พบรายการ</option>';if(L.length)view.sel=L.some(x=>x[0]==view.sel)?view.sel:L[0][0];$('sel').value=view.sel;draw()}
+function draw(){const id=view.sel,key=view.mode=='group'?'group_id':view.mode=='teacher'?'teacher_id':'room_id',g={};
+ res.rows.forEach(r=>{if(r[key]==id)(g[(r.day-1)+'|'+M.sIdx[r.period]]=g[(r.day-1)+'|'+M.sIdx[r.period]]||[]).push(r)});
+ let h='<tr><th class="t"></th>'+DAYN.map(x=>'<th>'+x+'</th>').join('')+'</tr>';
+ M.slots.forEach((s,si)=>{if(s.lunch)return h+='<tr><td class="brk" colspan="6">พักเที่ยง '+s.start+'–'+s.end+'</td></tr>';
+  h+='<tr><th class="t">คาบ '+s.id+'<br>'+s.start+'</th>'+DAYN.map((_,d)=>'<td>'+(g[d+'|'+si]||[]).map(r=>{const o=M.off[r.offering_id],sec=view.mode=='group'?M.t[o.t].n+' · '+M.rooms[M.r[r.room_id]].n:view.mode=='teacher'?M.g[o.g].n+' · '+M.rooms[M.r[r.room_id]].n:M.g[o.g].n+' · '+M.t[o.t].n;
+   return '<div class="cell" style="--h:'+hue(o.id)+'"><b>'+M.c[o.c].n+'</b><i>'+sec+'</i></div>'}).join('')+'</td>').join('')+'</tr>'});$('tbl').innerHTML=h}
+/* ---------- หน้า 4 ส่งออก ---------- */
+function p4(){$('pg').innerHTML=hero(IC4,'ส่งออก','ดาวน์โหลดผลลัพธ์เป็น CSV หรือรูป PNG ของแต่ละกลุ่ม')+'<div class="glass card"><div class="row"><button class="btn p" onclick="expSol()">ดาวน์โหลด solution.csv</button><button class="btn" onclick="expAll()">ตารางทั้งหมด CSV</button></div><hr style="border:0;border-top:1px solid var(--line);margin:16px 0"><b>รูป PNG ตารางรายกลุ่ม</b><div class="row" style="margin-top:8px"><select id="pgs" style="width:auto">'+M.gl.map(g=>'<option value="'+g.id+'">'+g.n+'</option>').join('')+'</select><button class="btn" onclick="expPng(false)">ดาวน์โหลด PNG กลุ่มที่เลือก</button><button class="btn" onclick="expPng(true)">PNG ทุกกลุ่ม ('+M.gl.length+' ไฟล์)</button></div><p class="mut" style="font-size:13px;margin-top:12px">หากกดแล้วไม่มีไฟล์ขึ้น เบราว์เซอร์หรือหน้าพรีวิวอาจบล็อกการดาวน์โหลด ให้เปิดไฟล์ index.html โดยตรง</p></div>'}
+function expSol(){dl('solution.csv',toCSV(['offering_id','session_no','day','period','room_id','teacher_id','group_id'],res.rows));toast('เริ่มดาวน์โหลด solution.csv','ok')}
+function expAll(){const rs=res.rows.map(r=>{const o=M.off[r.offering_id],s=M.slots[M.sIdx[r.period]];return{'กลุ่มเรียน':M.g[o.g].n,'วัน':DAYN[r.day-1],'_d':+r.day,'คาบ':r.period,'เวลา':s.start+'-'+s.end,'วิชา':M.c[o.c].n,'ครู':M.t[o.t].n,'ห้อง':M.rooms[M.r[r.room_id]].n}});
+ rs.sort((a,b)=>a['กลุ่มเรียน']<b['กลุ่มเรียน']?-1:a['กลุ่มเรียน']>b['กลุ่มเรียน']?1:a._d-b._d||a['คาบ']-b['คาบ']);dl('timetable-all.csv',toCSV(['กลุ่มเรียน','วัน','คาบ','เวลา','วิชา','ครู','ห้อง'],rs));toast('เริ่มดาวน์โหลด timetable-all.csv','ok')}
+async function drawPng(gid){try{await document.fonts.load('600 20px "Noto Sans Thai"')}catch(e){}
+ const g=M.g[gid],W=1240,lw=130,cw=(W-lw-24)/5,rh=76,top=100;let H=top+44+24;M.slots.forEach(s=>H+=s.lunch?34:rh);const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d'),F=(w,s)=>w+' '+s+'px "Noto Sans Thai",sans-serif';
+ const gr=x.createLinearGradient(0,0,W,H);gr.addColorStop(0,'#e9f5ff');gr.addColorStop(1,'#cfe6ff');x.fillStyle=gr;x.fillRect(0,0,W,H);
+ x.fillStyle='#0a49b3';x.font=F(700,32);x.fillText('ตารางเรียน '+g.n,24,48);x.fillStyle='#4f6b8a';x.font=F(400,16);x.fillText('Tarang Reian · '+g.size+' คน',24,76);
+ const rr=(a,b,w,h,r)=>{x.beginPath();x.roundRect?x.roundRect(a,b,w,h,r):x.rect(a,b,w,h)};let y=top;x.font=F(600,16);
+ DAYN.forEach((d,i)=>{x.fillStyle='#1e6fe0';rr(lw+12+i*cw+3,y,cw-6,36,10);x.fill();x.fillStyle='#fff';x.textAlign='center';x.fillText(d,lw+12+i*cw+cw/2,y+24)});x.textAlign='left';y+=44;
+ const by={};res.rows.forEach(r=>{if(r.group_id==gid)by[(r.day-1)+'|'+M.sIdx[r.period]]=r});
+ M.slots.forEach((s,si)=>{if(s.lunch){x.fillStyle='rgba(30,111,224,.12)';rr(12,y,W-24,28,8);x.fill();x.fillStyle='#4f6b8a';x.font=F(400,14);x.textAlign='center';x.fillText('พักเที่ยง '+s.start+'–'+s.end,W/2,y+19);x.textAlign='left';y+=34;return}
+  x.fillStyle='#4f6b8a';x.font=F(500,14);x.fillText('คาบ '+s.id,18,y+28);x.font=F(400,13);x.fillText(s.start+'–'+s.end,18,y+48);
+  for(let d=0;d<5;d++){const r=by[d+'|'+si],px=lw+12+d*cw+3;x.fillStyle='rgba(255,255,255,.6)';rr(px,y,cw-6,rh-6,10);x.fill();if(!r)continue;const o=M.off[r.offering_id];x.fillStyle='hsl('+hue(o.id)+',70%,84%)';rr(px,y,cw-6,rh-6,10);x.fill();
+   x.fillStyle='#0b2545';x.font=F(600,16);x.fillText(M.c[o.c].n,px+10,y+26,cw-26);x.fillStyle='#35506f';x.font=F(400,13);x.fillText(M.t[o.t].n,px+10,y+44,cw-26);x.fillText(M.rooms[M.r[r.room_id]].n,px+10,y+60,cw-26)}y+=rh});
+ return new Promise(r=>c.toBlob(r,'image/png'))}
+async function expPng(all){const L=all?M.gl.map(g=>g.id):[$('pgs').value];toast('กำลังสร้างรูป '+L.length+' ไฟล์…');for(const id of L){const b=await drawPng(id);dl('timetable-'+M.g[id].n.replace(/[^\wก-๙]+/g,'_')+'.png',b);await new Promise(r=>setTimeout(r,250))}toast('สร้างรูปเสร็จแล้ว','ok')}
+/* ---------- หน้า 5 ตรวจสอบ ---------- */
+let up=null,tests=null;
+function p5(){$('pg').innerHTML=hero(IC5,'ตรวจสอบ','อัปโหลด solution.csv จาก AI อื่น แล้วตรวจด้วยตัวตรวจเดียวกัน หรือรันทดสอบ 3 ขนาด')+
+ '<div class="glass card"><b>ตรวจ solution.csv</b><p class="mut" style="margin:4px 0 10px;font-size:14px">คอลัมน์ที่ต้องมี: offering_id, session_no, day (1-5), period (slot_id), room_id · ตรวจเทียบกับข้อมูลที่นำเข้าในขั้นที่ 1</p>'+
+ (ready()?'<input type="file" id="sf" accept=".csv,text/csv"><div id="cmp"></div>':'<p class="bad">ต้องนำเข้าข้อมูลที่ถูกต้องในขั้นที่ 1 ก่อน จึงจะตรวจได้</p>')+'</div>'+
+ '<div class="glass card"><b>รันทดสอบ 3 ขนาด</b><p class="mut" style="margin:4px 0 10px;font-size:14px">สร้างข้อมูลตัวอย่างเล็ก 2 / กลาง 8 / ใหญ่ 20 กลุ่ม จัดตาราง แล้วตรวจ 12 ข้อ (Seed 2024)</p><button class="btn p" id="tbtn" onclick="runTests()">เริ่มทดสอบ</button><div id="tres" style="margin-top:12px"></div></div>';
+ if(ready()){$('sf').onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{const p=parseCSV(String(rd.result));const need=['offering_id','session_no','day','period','room_id'].filter(h=>!p.h.includes(h));
+   if(need.length){up=null;$('cmp').innerHTML='<p class="bad">ไฟล์นี้ขาดคอลัมน์: '+need.join(', ')+'</p>';return toast('รูปแบบไฟล์ไม่ถูกต้อง','bad')}
+   up={name:f.name,rows:p.rows.length,chk:C.check(M,p.rows)};cmp();toast('ตรวจ '+f.name+' แล้ว','ok')};rd.readAsText(f,'UTF-8')};cmp()}
+ drawTests()}
+function cmp(){if(!up||!$('cmp'))return;const a=res?res.chk:null,b=up.chk,pa=a?a.filter(x=>x.ok).length:0,pb=b.filter(x=>x.ok).length,cell=x=>x?'<span class="'+(x.ok?'ok':'bad')+'">'+(x.ok?'✓ ผ่าน':'✗ '+x.c+' จุด')+'</span>':'<span class="mut">ยังไม่ได้จัด</span>';
+ $('cmp').innerHTML='<p style="margin:12px 0 4px"><b>'+up.name+'</b> · '+up.rows+' แถว · ผ่าน <b class="'+(pb==12?'ok':'bad')+'">'+pb+'/12</b>'+(a?' · ตัวจัดตารางนี้ผ่าน '+pa+'/12':'')+'</p>'+tb(['เงื่อนไข','ตัวจัดตารางนี้','ไฟล์ที่อัปโหลด'],C.CHECKS.map((n,i)=>({'เงื่อนไข':(i+1)+'. '+n,'ตัวจัดตารางนี้':cell(a&&a[i]),'ไฟล์ที่อัปโหลด':cell(b[i])})))+
+ b.filter(x=>!x.ok).map(x=>'<div class="bad" style="font-size:13px;margin-top:6px"><b>'+x.n+'</b>'+x.m.map(t=>'<br>'+t).join('')+'</div>').join('')}
+async function runTests(){$('tbtn').disabled=true;tests=[];for(const n of [2,8,20]){drawTests(n);const Tt=C.gen(n),P=C.prep(Tt),t0=performance.now(),m=await solveP(Tt,2024);const ms=performance.now()-t0,chk=C.check(P.M,m.rows);tests.push({n,ses:m.total,placed:m.total-m.un.length,at:m.attempts,ms,pass:chk.filter(x=>x.ok).length})}
+ $('tbtn').disabled=false;drawTests();const all=tests.every(t=>t.pass==12&&t.placed==t.ses);toast(all?'ทดสอบผ่านครบ 12 ข้อทั้ง 3 ขนาด':'มีบางขนาดที่ยังไม่ผ่านครบ',all?'ok':'warn');if(all)confetti()}
+function drawTests(run){const e=$('tres');if(!e||!tests)return;e.innerHTML=tb(['ขนาด','ครั้งเรียน','วางได้','รอบ','เวลา','ผ่านเงื่อนไข'],tests.map(t=>({'ขนาด':t.n+' กลุ่ม','ครั้งเรียน':t.ses,'วางได้':t.placed+'/'+t.ses,'รอบ':t.at,'เวลา':t.ms<1000?Math.round(t.ms)+' ms':(t.ms/1000).toFixed(2)+' วินาที','ผ่านเงื่อนไข':'<span class="'+(t.pass==12?'ok':'bad')+'">'+t.pass+'/12</span>'})))+(run?'<p class="mut">กำลังทดสอบขนาด '+run+' กลุ่ม…</p>':'')}
+if(sget('tr_user'))enter();
+</script>
+</body></html>
