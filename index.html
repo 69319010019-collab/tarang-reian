@@ -112,8 +112,9 @@ html:not([data-theme=dark]) #app code,html:not([data-theme=dark]) #app pre{backg
 .done circle,.done path{fill:none;stroke:var(--ok);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
 .pop .done circle{stroke-dasharray:140;stroke-dashoffset:140;animation:dr .6s .1s forwards}.pop .done path{stroke-dasharray:40;stroke-dashoffset:40;animation:dr .4s .55s forwards}@keyframes dr{to{stroke-dashoffset:0}}
 @media(prefers-reduced-motion:reduce){.bar.run i,.pop,.pop .done circle,.pop .done path{animation:none!important}.pop .done circle,.pop .done path{stroke-dashoffset:0}}
+.tabs{display:flex;gap:6px;margin-bottom:16px}.tabs button{flex:1;padding:.5em;background:transparent;color:var(--mu);border:1px solid var(--line)}.tabs button.on{background:rgba(255,255,255,.1);color:var(--tx)}
 </style>
-</head>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script></head>
 <body>
 <div id="login" class="login">
  <section class="lhero">
@@ -123,19 +124,21 @@ html:not([data-theme=dark]) #app code,html:not([data-theme=dark]) #app pre{backg
   <p class="hint">ทำงานในเบราว์เซอร์ ไม่มีเซิร์ฟเวอร์</p>
  </section>
  <section class="lside"><div class="lcard">
-  <h2>เข้าสู่ระบบ</h2><p>กรอกบัญชีเพื่อเริ่มจัดตาราง</p>
+  <div class="tabs"><button type="button" class="on" data-m="in">เข้าสู่ระบบ</button><button type="button" data-m="up">สมัครสมาชิก</button></div><h2>เข้าสู่ระบบ</h2><p>กรอกบัญชีเพื่อเริ่มจัดตาราง</p>
   <label for="u">ชื่อผู้ใช้</label><input id="u" autocomplete="username" autofocus>
   <label for="pw">รหัสผ่าน</label><div class="pw"><input id="pw" type="password" autocomplete="current-password"><button type="button" data-act="eye">แสดง</button></div>
-  <p id="lerr" style="color:var(--bad);min-height:1.6em;margin:.6em 0 .2em" role="alert"></p>
+  <div id="cpw" hidden><label for="pw2">ยืนยันรหัสผ่าน</label><input id="pw2" type="password" autocomplete="new-password"></div><p id="lerr" style="color:var(--bad);min-height:1.6em;margin:.6em 0 .2em" role="alert"></p>
   <button id="lgo">เข้าสู่ระบบ</button>
-  <div class="note"><b>บัญชีทดลอง:</b> <code>admin</code> / <code>admin</code><br>ล็อกอินนี้เป็นเพียงต้นแบบ ไม่ปลอดภัยจริง</div>
+  <div class="note" id="demo"><b>บัญชีทดลอง:</b> <code>admin</code> / <code>admin</code><br>ล็อกอินนี้เป็นเพียงต้นแบบ ไม่ปลอดภัยจริง</div>
  </div></section>
 </div>
 <div id="app" hidden>
- <aside class="side"><div class="mark"><svg viewBox="0 0 42 42" aria-hidden="true"><rect x="1" y="1" width="40" height="40" rx="12" fill="rgba(90,169,255,.14)" stroke="#5aa9ff" stroke-opacity=".5"/><path d="M11 15h20M11 21h20M11 27h12" stroke="#9fd0ff" stroke-width="2.6" stroke-linecap="round"/><circle cx="29" cy="27" r="3" fill="#fff"/></svg>tarang reian</div><nav id="nav" aria-label="เมนูหลัก"></nav><button class="ghost" id="thm">สลับธีมสว่าง/มืด</button><button class="ghost" id="lgout">ออกจากระบบ</button></aside>
+ <aside class="side"><div class="mark"><svg viewBox="0 0 42 42" aria-hidden="true"><rect x="1" y="1" width="40" height="40" rx="12" fill="rgba(90,169,255,.14)" stroke="#5aa9ff" stroke-opacity=".5"/><path d="M11 15h20M11 21h20M11 27h12" stroke="#9fd0ff" stroke-width="2.6" stroke-linecap="round"/><circle cx="29" cy="27" r="3" fill="#fff"/></svg>tarang reian</div><nav id="nav" aria-label="เมนูหลัก"></nav><p id="who" class="hint" style="padding:0 8px;margin:0;word-break:break-all"></p><button class="ghost" id="thm">สลับธีมสว่าง/มืด</button><button class="ghost" id="lgout">ออกจากระบบ</button></aside>
  <main id="view"></main>
 </div>
 <script>
+/* ===== ตั้งค่า Supabase (Project Settings > API) — เว้นว่างไว้ = ใช้ล็อกอินทดลองแบบเดิม ===== */
+const SB_URL='',SB_KEY='';
 /*==ENGINE_START==*/
 /* ================= Data Parser ================= */
 const SAMPLE={"courses": "﻿course_id,course_name,room_type\nC01,การพัฒนาโปรแกรมประยุกต์,COMPUTER\nC02,ระบบเครือข่ายขั้นสูง,NETWORK\nC03,พื้นฐานปัญญาประดิษฐ์,COMPUTER\nC04,สื่อดิจิทัลสร้างสรรค์,MEDIA\nC05,โครงงานซอฟต์แวร์,COMPUTER\nC06,คณิตศาสตร์คอมพิวเตอร์,GENERAL\nC07,ทักษะการสื่อสารวิชาชีพ,GENERAL\n", "groups": "﻿group_id,group_name,student_count,max_periods_per_day\nG01,ปวส.1 ดิจิทัล A,28,6\nG02,ปวส.1 ดิจิทัล B,30,6\nG03,ปวส.1 ดิจิทัล C,26,6\nG04,ปวส.1 ไอที A,32,6\nG05,ปวส.1 ไอที B,29,6\nG06,ปวส.2 ดิจิทัล A,33,6\nG07,ปวส.2 ดิจิทัล B,27,6\nG08,ปวส.2 ไอที A,31,6\nG09,ปวส.2 ไอที B,25,6\n", "rooms": "﻿room_id,room_name,room_type,capacity\nR01,ห้อง 501,GENERAL,45\nR02,ห้อง 502,GENERAL,45\nR03,ห้อง 503,GENERAL,42\nR04,ห้อง 504,GENERAL, 44 \n r05 ,ห้อง 505,COMPUTER,38\nR06,ห้อง 506,COMPUTER,36\nR07,ห้อง 507,COMPUTER,40\nR08,ห้อง 508, net ,36\nR09,ห้อง 509,NETWORK,35\nR10,ห้อง 510, med ,36\nR11,ห้อง 511,MEDIA,36\n", "teachers": "﻿teacher_id,teacher_name,max_periods_per_day,max_periods_per_week\nT01,ครูอาทิตย์,5,18\n t02 ,ครูวรัญญา,5,18\nT03,ครูพงษ์ศักดิ์,5,18\nT04,ครูธนกฤต,5,18\nT05,ครูศุภกร,5,18\nT06,ครูนภาพร,5,18\nt07,ครูจักรินทร์,5,18\nT08,ครูกัญญารัตน์,5,18\nT09,ครูสุเมธ,5,18\nT10,ครูภัทรพล,5,18\n T11 ,ครูพัชรินทร์,5,18\nT12,ครูรัตนา,5,18\nT13,ครูภาคภูมิ,05,18\nT14,ครูสุนิสา,5,18\nT15,ครูภูริ,5,18\nT16,ครูบุษบา,5,18\nT17,ครูมานะ,5,18\nT18,ครูจุฑามาศ,5,18\nt07,ครูจักรินทร์,5,18\n", "offerings": "﻿offering_id,group_id,course_id,teacher_id,periods\nO001,G01,C01,T02,2\nO002,G01,C02,T06,3\nO003,G01,C03, t08 ,2\nO004,G01,C04,T11,2\nO005,G01,C05,T15,2\nO006,G01,C06,T16,1\nO007,G01,C07,T16,2\nO008,G02,C01,T03,2\nO009,G02,C02,T04,3\nO010,G02,C03,T08,2\nO011,G02,C04,T12,2\nO012, g02 ,C05,T13,2\nO013,G02,C06,T17,1\nO014,G02,C07,T17,2\nO015,G03,C01,T01,2\nO016,G03,C02,T05,3\nO017,G03,C03,T09,2\nO018,G03,C04,T10,2\nO019,G03, c05 ,T14,2\nO020,G03,C06,T16,1\nO021,G03,C07,T18,2\nO022,G04,C01,T02,2\nO023,G04,C02,T06,3\nO024,G04,C03,T07,2\nO025,G04,C04,T11,02\nO026,G04,C05,T15,2\nO027,G04,C06,T17,1\nO028,G04,C07,T16,2\nO029,G05,C01,T03,2\nO030,G05,C02,T04,3\nO031,G05,C03,T08,2\nO032,G05,C04,T12,2\nO033,G05,C05,T13,2\nO034,G05,C06,T16,1\nO035,G05,C07,T17,2\nO036,G06,C01,T01,2\nO037,G06,C02,T05,3\n o038 ,G06,C03,T09,2\nO039,G06,C04,T10,2\nO040,G06,C05,T14,2\nO041,G06,C06,T17,1\nO042,G06,C07,T18,2\nO043,G07,C01,T02,2\nO044,G07,C02,T06,3\nO045,G07,C03,T07,2\nO046,G07,C04,T11,2\nO047,G07,C05,T15,2\nO048,G07,C06,T16,1\nO049,G07,C07,T16,2\nO050,G08,C01,T03,2\nO051,G08,C02, T09 ,3\nO052,G08,C03,T08,2\nO053,G08,C04,T12,2\nO054,G08,C05,T13,2\nO055,G08,C06,T17,1\nO056,G08,C07,T17,2\nO057,G09,C01,T01,2\nO058,G09,C02,T05,3\nO059,G09,C03,T09,2\nO060,G09,C04,T10,2\nO061,G09,C05,T14,2\nO062,G09,C06,T16,1\nO063,G09,C07,T18,2\nO020,G03,C06,T16,1\nO045,G07,C03,T07,2\n", "fixed_sessions": "﻿offering_id,day,start_period,room_id\nO002,WED,1,R09\nO020,WED,1,R04\nO038,FRI,5,R06\nO055,WED,4,R01\n", "room_blocks": "﻿room_id,day,period\nR01,THU,1\nR02,MON,4\nR03,MON,5\nR04,FRI,8\nR05,MON,8\nR06,MON,1\nR07,WED,3\nR08,THU,7\nR09,MON,4\nR10,WED,6\nR11,TUE,5\n", "teacher_blocks": "﻿teacher_id,day,period\nT01,FRI,7\nT02,FRI,6\nT03,FRI,5\nT04,MON,2\nT05,FRI,6\nT06,MON,6\nT07,FRI,1\nT08,THU,3\nT09,THU,4\nT10,TUE,1\nT11,TUE,4\nT12,THU,4\nT13,FRI,2\nT14,WED,3\nT15,THU,8\nT16,FRI,8\nT17,MON,5\nT18,TUE,2\n", "shared_students": "﻿group_a,group_b,shared_student_count\nG01,G04,4\nG02,G05,3\nG06,G08,5\n", "timeslots": "﻿day,period,start_time,end_time\nMON,1,08:00,09:00\nMON,2,09:00,10:00\nMON,3,10:00,11:00\nMON,4,11:00,12:00\nMON,5,13:00,14:00\nMON,6,14:00,15:00\nMON,7,15:00,16:00\nMON,8,16:00,17:00\nTUE,1,08:00,09:00\nTUE,2,09:00,10:00\nTUE,3,10:00,11:00\nTUE,4,11:00,12:00\nTUE,5,13:00,14:00\nTUE,6,14:00,15:00\nTUE,7,15:00,16:00\nTUE,8,16:00,17:00\nWED,1,08:00,09:00\nWED,2,09:00,10:00\nWED,3,10:00,11:00\nWED,4,11:00,12:00\nWED,5,13:00,14:00\nWED,6,14:00,15:00\nWED,7,15:00,16:00\nWED,8,16:00,17:00\nTHU,1,08:00,09:00\nTHU,2,09:00,10:00\nTHU,3,10:00,11:00\nTHU,4,11:00,12:00\nTHU,5,13:00,14:00\nTHU,6,14:00,15:00\nTHU,7,15:00,16:00\nTHU,8,16:00,17:00\nFRI,1,08:00,09:00\nFRI,2,09:00,10:00\nFRI,3,10:00,11:00\nFRI,4,11:00,12:00\nFRI,5,13:00,14:00\nFRI,6,14:00,15:00\nFRI,7,15:00,16:00\nFRI,8,16:00,17:00\n"};
@@ -494,7 +497,7 @@ function route(){const m=/^#\/app\/(\w+)/.exec(location.hash),ok=m&&PAGES.some(x
  else{$('#app').hidden=true;$('#login').hidden=false;if(location.hash!=='#/login')history.replaceState(null,'','#/login')}}
 
 A.undo=[];
-function persist(){try{localStorage.setItem('ppdc_work',JSON.stringify({raw:A.raw,ds:A.ds,confirmed:A.confirmed,sol:A.sol}))}catch(e){}}
+function persist(){try{localStorage.setItem('ppdc_work',JSON.stringify({raw:A.raw,ds:A.ds,confirmed:A.confirmed,sol:A.sol}))}catch(e){}cloudSave()}
 try{const w=JSON.parse(localStorage.getItem('ppdc_work')||'null');if(w&&w.raw&&Object.keys(w.raw).length){A.raw=w.raw;A.ds=w.ds||'';A.cl=cleanse(A.raw);if(A.cl&&A.cl.D&&w.confirmed){A.confirmed=true;if(w.sol&&w.sol.length){A.sol=w.sol;A.rep=validate(A.cl.D,A.sol)}}}}catch(e){}
 try{if(localStorage.getItem('ppdc_theme')==='light')document.documentElement.dataset.theme='light'}catch(e){}
 $('#thm').onclick=()=>{const d=document.documentElement,n=d.dataset.theme==='dark'?'light':'dark';d.dataset.theme=n;try{localStorage.setItem('ppdc_theme',n)}catch(e){}};
@@ -540,6 +543,36 @@ function burst(){if(matchMedia('(prefers-reduced-motion:reduce)').matches)return
  c.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:99';document.body.appendChild(c);
  const ps=Array.from({length:140},()=>({x:W/2+(Math.random()-.5)*160,y:H*.55,vx:(Math.random()-.5)*14,vy:-Math.random()*16-6,s:4+Math.random()*6,r:Math.random()*6,vr:(Math.random()-.5)*.4,c:cs[Math.random()*cs.length|0]})),t0=performance.now();
  (function f(t){const k=t-t0;x.clearRect(0,0,W,H);ps.forEach(p=>{p.vy+=.35;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;x.save();x.globalAlpha=Math.max(0,1-k/2600);x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/3,p.s,p.s*.6);x.restore()});k<2600?requestAnimationFrame(f):c.remove()})(t0)}
+
+/* ---- สมัครสมาชิก / ล็อกอินจริง (Supabase Auth) + เก็บงานบนคลาวด์ ---- */
+const sb=(SB_URL&&SB_KEY&&window.supabase)?window.supabase.createClient(SB_URL,SB_KEY):null;
+let AM='in',cst;
+const say=(m,ok)=>{const e=$('#lerr');e.textContent=m;e.style.color=ok?'var(--ok)':'var(--bad)'};
+function setMode(m){AM=m;const up=m==='up';$('#cpw').hidden=!up;$('#lgo').textContent=up?'สมัครสมาชิก':'เข้าสู่ระบบ';say('');document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
+ document.querySelector('.lcard h2').textContent=up?'สมัครสมาชิก':'เข้าสู่ระบบ';document.querySelector('label[for=u]').textContent=sb?'อีเมล':'ชื่อผู้ใช้';$('#u').type=sb?'email':'text';$('#demo').hidden=!!sb||up}
+function authErr(e){const m=String(e.message||'');return/Invalid login/i.test(m)?'อีเมลหรือรหัสผ่านไม่ถูกต้อง':/not confirmed/i.test(m)?'ยังไม่ได้ยืนยันอีเมล ตรวจกล่องจดหมายก่อน':/already registered/i.test(m)?'อีเมลนี้สมัครไว้แล้ว ลองเข้าสู่ระบบ':/at least/i.test(m)?'รหัสผ่านสั้นเกินไป':(e.status===429||/rate limit/i.test(m))?'ทำรายการบ่อยเกินไป รอสักครู่แล้วลองใหม่':m}
+async function submitAuth(){
+ if(!sb){if(AM==='up')return say('ยังไม่ได้ตั้งค่า Supabase (SB_URL / SB_KEY ที่ต้นสคริปต์) จึงสมัครสมาชิกไม่ได้');return login()}
+ const em=$('#u').value.trim(),pw=$('#pw').value;if(!em||!pw)return say('กรุณากรอกอีเมลและรหัสผ่านให้ครบ');if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em))return say('รูปแบบอีเมลไม่ถูกต้อง');
+ const b=$('#lgo');b.disabled=true;
+ try{if(AM==='up'){if(pw.length<8)return say('รหัสผ่านต้องยาวอย่างน้อย 8 ตัวอักษร');if(pw!==$('#pw2').value)return say('รหัสผ่านสองช่องไม่ตรงกัน');
+   const{data,error}=await sb.auth.signUp({email:em,password:pw});if(error)return say(authErr(error));
+   if(data.session)return enter(data.session);
+   if(data.user&&data.user.identities&&!data.user.identities.length)return say('อีเมลนี้สมัครไว้แล้ว ลองเข้าสู่ระบบ');
+   setMode('in');say('สมัครสำเร็จ — ตรวจอีเมลเพื่อกดยืนยัน แล้วกลับมาเข้าสู่ระบบ',1)}
+  else{const{data,error}=await sb.auth.signInWithPassword({email:em,password:pw});if(error)return say(authErr(error));enter(data.session)}}
+ catch(e){say('เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ ลองใหม่อีกครั้ง')}finally{b.disabled=false}}
+async function enter(se){A.user=se.user;$('#who').textContent=A.user.email;document.documentElement.dataset.theme='dark';try{localStorage.setItem('ppdc_theme','dark')}catch(e){}
+ await cloudLoad();$('#pw').value='';$('#pw2').value='';A.auth=true;$('#login').hidden=true;$('#app').hidden=false;go('data')}
+async function cloudLoad(){try{const{data,error}=await sb.from('workspaces').select('data').eq('user_id',A.user.id).maybeSingle();if(error)return;const w=data&&data.data;A.raw={};A.cl=null;A.confirmed=false;A.sol=null;A.rep=null;A.undo=[];
+ if(w&&w.raw&&Object.keys(w.raw).length){A.raw=w.raw;A.ds=w.ds||'';A.cl=cleanse(A.raw);if(A.cl&&A.cl.D&&w.confirmed){A.confirmed=true;if(w.sol&&w.sol.length){A.sol=w.sol;A.rep=validate(A.cl.D,A.sol)}}}}catch(e){}}
+function cloudSave(){if(!sb||!A.user)return;clearTimeout(cst);cst=setTimeout(async()=>{if(!A.user)return;try{await sb.from('workspaces').upsert({user_id:A.user.id,data:{raw:A.raw,ds:A.ds,confirmed:A.confirmed,sol:A.sol},updated_at:new Date().toISOString()})}catch(e){}},1500)}
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>setMode(b.dataset.m));
+$('#lgo').onclick=submitAuth;$('#pw').onkeydown=$('#pw2').onkeydown=e=>{if(e.key==='Enter')submitAuth()};
+const oldOut=$('#lgout').onclick;
+$('#lgout').onclick=async()=>{if(!sb)return oldOut();clearTimeout(cst);A.user=null;try{await sb.auth.signOut()}catch(e){}try{localStorage.removeItem('ppdc_work');localStorage.removeItem('ppdc_hist')}catch(e){}location.hash='#/login';location.reload()};
+setMode('in');
+if(sb){A.auth=false;sb.auth.getSession().then(({data})=>{if(data.session&&!A.auth)enter(data.session)})}
 window.addEventListener('hashchange',route);route();
 /*==UI_END==*/
 </script>
