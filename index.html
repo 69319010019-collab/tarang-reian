@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="th" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>tarang reian</title>
+<title>ตารางเรียน · tarang reian</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#07090d;--card:rgba(255,255,255,.045);--card2:rgba(255,255,255,.08);--line:#232a36;--tx:#f4f7fb;--mu:#98a3b5;--ac:#5aa9ff;--ac2:#9fd0ff;--ok:#4cd694;--bad:#ff6b7a;--warn:#f5c04a;--r:18px}
 *{box-sizing:border-box}html,body{margin:0}
@@ -85,6 +85,33 @@ th{font-size:.8rem}tr:hover td{background:rgba(255,255,255,.02)}
 .step{padding:.55em .8em;min-width:2.6em}
 @media(max-width:700px){.tbar .row,.tbar button{width:100%}.tbar button{justify-content:center}#ts{flex:1}}
 @media print{#app{display:block}body::before{display:none}.card{background:#fff;box-shadow:none}.ph{display:none}}
+
+:root{--cs:40%;--cl:26%}
+#tg{position:relative}
+.cell[draggable=true]{cursor:grab}.cell.dragging{opacity:.4}
+.hl{position:absolute;pointer-events:none;border-radius:8px;background:rgba(34,197,94,.25);border:2px dashed #22c55e;z-index:2}
+.tt th,.tt td{font-size:.875rem}.cell span{font-size:.8rem}
+html:not([data-theme=dark]) #app{--bg:#f4f6fa;--card:#fff;--card2:#eaeef5;--line:#d5dce8;--tx:#101828;--mu:#566176;--ac:#2563eb;--ac2:#1d4ed8;--ok:#15803d;--bad:#c62839;--warn:#a15c07;--cs:75%;--cl:90%;background:var(--bg);color:var(--tx)}
+html:not([data-theme=dark]) body::before{display:none}
+html:not([data-theme=dark]) #app .card{background:#fff;border-color:var(--line);box-shadow:0 1px 3px rgba(16,24,40,.08);backdrop-filter:none}
+html:not([data-theme=dark]) #app button{background:#101828;color:#fff}
+html:not([data-theme=dark]) #app button.ghost{background:transparent;color:var(--tx)}
+html:not([data-theme=dark]) #app .side{background:#fff}
+html:not([data-theme=dark]) #app .side nav button{background:transparent;color:var(--mu)}
+html:not([data-theme=dark]) #app .side nav button.on{background:rgba(37,99,235,.1);color:var(--tx);box-shadow:inset 0 0 0 1px rgba(37,99,235,.35)}
+html:not([data-theme=dark]) #app input,html:not([data-theme=dark]) #app select{background:#fff;border-color:var(--line)}
+html:not([data-theme=dark]) #app select option{background:#fff}
+html:not([data-theme=dark]) #app .stat div,html:not([data-theme=dark]) #app .drop,html:not([data-theme=dark]) #app .chk{background:#f8fafc}
+html:not([data-theme=dark]) #app .tt td.d{background:#eaeef5}
+html:not([data-theme=dark]) #app .cell span{color:#475569}
+html:not([data-theme=dark]) #app code,html:not([data-theme=dark]) #app pre{background:#eef2f8}
+
+.bar.run i{background-image:linear-gradient(90deg,var(--ac),var(--ac2),var(--ac));background-size:200% 100%;animation:sh 1.1s linear infinite;transition:width .1s linear}@keyframes sh{to{background-position:-200% 0}}
+.pop{animation:pop .5s cubic-bezier(.2,1.2,.3,1)}@keyframes pop{from{transform:scale(.96);opacity:0}to{transform:none;opacity:1}}
+.done{display:flex;align-items:center;gap:12px;margin-bottom:10px;color:var(--ok);font-weight:700;font-size:1.1rem}.done svg{width:44px;height:44px;flex:none}
+.done circle,.done path{fill:none;stroke:var(--ok);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.pop .done circle{stroke-dasharray:140;stroke-dashoffset:140;animation:dr .6s .1s forwards}.pop .done path{stroke-dasharray:40;stroke-dashoffset:40;animation:dr .4s .55s forwards}@keyframes dr{to{stroke-dashoffset:0}}
+@media(prefers-reduced-motion:reduce){.bar.run i,.pop,.pop .done circle,.pop .done path{animation:none!important}.pop .done circle,.pop .done path{stroke-dashoffset:0}}
 </style>
 </head>
 <body>
@@ -92,8 +119,8 @@ th{font-size:.8rem}tr:hover td{background:rgba(255,255,255,.02)}
  <section class="lhero">
   <div class="mark"><svg viewBox="0 0 42 42" aria-hidden="true"><rect x="1" y="1" width="40" height="40" rx="12" fill="rgba(90,169,255,.14)" stroke="#5aa9ff" stroke-opacity=".5"/><path d="M11 15h20M11 21h20M11 27h12" stroke="#9fd0ff" stroke-width="2.6" stroke-linecap="round"/><circle cx="29" cy="27" r="3" fill="#fff"/></svg>tarang reian</div>
   <div><h1>จัดตารางเรียนให้ลงตัว ตรวจได้ทุกข้อกำหนด</h1>
-   <ul><li><i></i>นำเข้า CSV แล้วตรวจและทำความสะอาดข้อมูลให้อัตโนมัติ</li><li><i></i>จัดตารางพร้อมตรวจ Hard Constraints ครบ 12 ข้อ</li><li><i></i>ดูตามกลุ่ม ครู ห้อง และส่งออก solution.csv</li></ul></div>
-  <p class="hint">ต้นแบบที่ทำงานในเบราว์เซอร์ ไม่มีเซิร์ฟเวอร์</p>
+   <ul><li><i></i>นำเข้า CSV และตรวจข้อมูลอัตโนมัติ</li><li><i></i>ตรวจข้อบังคับครบ 12 ข้อ</li><li><i></i>ดูตารางตามกลุ่ม ครู ห้อง</li></ul></div>
+  <p class="hint">ทำงานในเบราว์เซอร์ ไม่มีเซิร์ฟเวอร์</p>
  </section>
  <section class="lside"><div class="lcard">
   <h2>เข้าสู่ระบบ</h2><p>กรอกบัญชีเพื่อเริ่มจัดตาราง</p>
@@ -101,11 +128,11 @@ th{font-size:.8rem}tr:hover td{background:rgba(255,255,255,.02)}
   <label for="pw">รหัสผ่าน</label><div class="pw"><input id="pw" type="password" autocomplete="current-password"><button type="button" data-act="eye">แสดง</button></div>
   <p id="lerr" style="color:var(--bad);min-height:1.6em;margin:.6em 0 .2em" role="alert"></p>
   <button id="lgo">เข้าสู่ระบบ</button>
-  <div class="note"><b>บัญชีทดลอง:</b> <code>admin</code> / <code>admin</code><br>ล็อกอินนี้ทำงานในเบราว์เซอร์เท่านั้น (Frontend-only) ไม่ใช่ระบบรักษาความปลอดภัยจริง</div>
+  <div class="note"><b>บัญชีทดลอง:</b> <code>admin</code> / <code>admin</code><br>ล็อกอินนี้เป็นเพียงต้นแบบ ไม่ปลอดภัยจริง</div>
  </div></section>
 </div>
 <div id="app" hidden>
- <aside class="side"><div class="mark"><svg viewBox="0 0 42 42" aria-hidden="true"><rect x="1" y="1" width="40" height="40" rx="12" fill="rgba(90,169,255,.14)" stroke="#5aa9ff" stroke-opacity=".5"/><path d="M11 15h20M11 21h20M11 27h12" stroke="#9fd0ff" stroke-width="2.6" stroke-linecap="round"/><circle cx="29" cy="27" r="3" fill="#fff"/></svg>tarang reian</div><nav id="nav" aria-label="เมนูหลัก"></nav><button class="ghost" id="lgout">ออกจากระบบ</button></aside>
+ <aside class="side"><div class="mark"><svg viewBox="0 0 42 42" aria-hidden="true"><rect x="1" y="1" width="40" height="40" rx="12" fill="rgba(90,169,255,.14)" stroke="#5aa9ff" stroke-opacity=".5"/><path d="M11 15h20M11 21h20M11 27h12" stroke="#9fd0ff" stroke-width="2.6" stroke-linecap="round"/><circle cx="29" cy="27" r="3" fill="#fff"/></svg>tarang reian</div><nav id="nav" aria-label="เมนูหลัก"></nav><button class="ghost" id="thm">สลับธีมสว่าง/มืด</button><button class="ghost" id="lgout">ออกจากระบบ</button></aside>
  <main id="view"></main>
 </div>
 <script>
@@ -333,61 +360,61 @@ const sig=D=>{let h=5381;const s=JSON.stringify(D,(k,v)=>k==='_row'?undefined:v)
 async function hashPw(p){const dj=(()=>{let h=5381;for(const c of 'ppdc:'+p)h=((h<<5)+h+c.charCodeAt(0))|0;return'djb'+(h>>>0).toString(16)})();try{if(window.crypto&&crypto.subtle){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('ppdc:'+p));return[[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join(''),dj]}}catch(e){}return[dj,dj]}
 async function login(){const u=$('#u').value.trim(),p=$('#pw').value;if(!u||!p){$('#lerr').textContent='กรุณากรอกชื่อผู้ใช้และรหัสผ่านให้ครบ';return}
  const hs=await hashPw(p),ok=u.toLowerCase()===AUTH.user&&(hs[0]===AUTH.sha||hs[1]===AUTH.djb);if(!ok){$('#lerr').textContent='ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';return}
- try{sessionStorage.setItem('ppdc_in','1')}catch(e){}A.auth=true;$('#login').hidden=true;$('#app').hidden=false;go('data')}
+ try{sessionStorage.setItem('ppdc_in','1')}catch(e){}document.documentElement.dataset.theme='dark';try{localStorage.setItem('ppdc_theme','dark')}catch(e){}A.auth=true;$('#login').hidden=true;$('#app').hidden=false;go('data')}
 $('#lgo').onclick=login;$('#pw').onkeydown=e=>{if(e.key==='Enter')login()};
 $('#lgout').onclick=()=>{A.auth=false;try{sessionStorage.removeItem('ppdc_in')}catch(e){}$('#app').hidden=true;$('#login').hidden=false;$('#pw').value='';location.hash='#/login'};
 /* ---- Navigation ---- */
 const PAGES=[['data','1 ข้อมูล'],['gen','2 จัดตาราง'],['tt','3 ตารางเรียน'],['chk','4 ตรวจสอบ/ส่งออก'],['hist','5 ประวัติ'],['help','? คู่มือ & ทดสอบ']];
-const HD={data:['นำเข้าและตรวจสอบข้อมูล','ลากวางไฟล์ CSV ตรวจความถูกต้อง แล้วยืนยันก่อนจัดตาราง'],gen:['จัดตารางอัตโนมัติ','ตั้งค่าแล้วให้ระบบค้นหาตารางที่ผ่านทุกข้อบังคับ'],tt:['ตารางเรียน','ดูตามกลุ่มเรียน ครูผู้สอน หรือห้องเรียน'],chk:['ตรวจสอบและส่งออก','ผลตรวจ Hard Constraints 12 ข้อ และไฟล์ solution.csv'],hist:['ประวัติการจัดตาราง','เปิดดูและเปรียบเทียบผลย้อนหลัง'],help:['คู่มือและชุดทดสอบ','ขั้นตอนใช้งาน อัลกอริทึม และผลทดสอบจริง']};
-function go(p){A.page=p;if(location.hash!=='#/app/'+p)location.hash='#/app/'+p;$('#nav').innerHTML=PAGES.map(x=>{const m=/^([\d?])\s(.*)$/.exec(x[1]),dn=({data:A.confirmed,gen:!!A.sol,tt:!!A.sol,chk:!!(A.rep&&A.rep.status==='PASS')})[x[0]],lk=({gen:!A.confirmed,tt:!A.sol})[x[0]];return'<button class="'+(x[0]===p?'on':'')+(lk?' lock':'')+'" data-go="'+x[0]+'"'+(lk?' title="ยังไม่พร้อม — ทำขั้นก่อนหน้าให้เสร็จก่อน"':'')+'><span class="n'+(dn?' ok':'')+'">'+(dn?'✓':m?m[1]:'?')+'</span>'+esc(m?m[2]:x[1])+'</button>'}).join('');const v=$('#view');v.innerHTML='<header class="ph"><h1>'+HD[p][0]+'</h1><p>'+HD[p][1]+'</p></header>'+({data:pData,gen:pGen,tt:pTT,chk:pChk,hist:pHist,help:pHelp})[p]();if(p==='tt'&&A.sol)ttRender()}
+const HD={data:['นำเข้าและตรวจสอบข้อมูล','นำเข้า CSV ตรวจข้อมูล แล้วยืนยัน'],gen:['จัดตารางอัตโนมัติ','ให้ระบบค้นหาตารางที่ผ่านทุกข้อบังคับ'],tt:['ตารางเรียน','ดูตามกลุ่ม ครู หรือห้อง'],chk:['ตรวจสอบและส่งออก','ผลตรวจ 12 ข้อ และ solution.csv'],hist:['ประวัติการจัดตาราง','เปิดดูและเทียบผลย้อนหลัง'],help:['คู่มือและชุดทดสอบ','วิธีใช้และชุดทดสอบ']};
+function go(p){persist();A.page=p;if(location.hash!=='#/app/'+p)location.hash='#/app/'+p;$('#nav').innerHTML=PAGES.map(x=>{const m=/^([\d?])\s(.*)$/.exec(x[1]),dn=({data:A.confirmed,gen:!!A.sol,tt:!!A.sol,chk:!!(A.rep&&A.rep.status==='PASS')})[x[0]],lk=({gen:!A.confirmed,tt:!A.sol})[x[0]];return'<button class="'+(x[0]===p?'on':'')+(lk?' lock':'')+'" data-go="'+x[0]+'"'+(lk?' title="ยังไม่พร้อม — ทำขั้นก่อนหน้าให้เสร็จก่อน"':'')+'><span class="n'+(dn?' ok':'')+'">'+(dn?'✓':m?m[1]:'?')+'</span>'+esc(m?m[2]:x[1])+'</button>'}).join('');const v=$('#view');v.innerHTML='<header class="ph"><h1>'+HD[p][0]+'</h1><p>'+HD[p][1]+'</p></header>'+({data:pData,gen:pGen,tt:pTT,chk:pChk,hist:pHist,help:pHelp})[p]();if(p==='tt'&&A.sol)ttRender()}
 const need=(t,b,g,l)=>'<div class="card empty"><h3>'+t+'</h3><p>'+b+'</p>'+(g?'<button data-go="'+g+'">'+l+'</button>':'')+'</div>';
 /* ---- Page: Upload & Validate ---- */
 function pData(){const c=A.cl,errs=c?c.issues.filter(i=>i.level==='error'):[];
- let h='<section class="card"><h2>นำเข้าไฟล์ CSV</h2><p>เลือกหรือลากวางไฟล์ทั้ง 10 ไฟล์พร้อมกัน ระบบเก็บไฟล์ต้นฉบับไว้จนกว่าคุณจะยืนยันใช้ข้อมูลที่ทำความสะอาดแล้ว</p>'+
+ let h='<section class="card"><h2>นำเข้าไฟล์ CSV</h2><p>ลากวางไฟล์ทั้ง 10 ไฟล์พร้อมกัน</p>'+
  '<label class="drop" id="drop">ลากไฟล์ .csv มาวางที่นี่ หรือคลิกเพื่อเลือก<input type="file" id="fi" multiple accept=".csv,text/csv" hidden></label><div class="row">'+
  '<button data-act="sample">โหลดชุดข้อมูลโจทย์ (ฝังในระบบ)</button><button class="ghost" data-act="dlsample">ดาวน์โหลด CSV ชุดโจทย์ 10 ไฟล์</button><button class="ghost" data-act="clear">ล้างข้อมูล</button></div>'+(A.msg?'<p style="color:var(--warn)">'+esc(A.msg)+'</p>':'')+'</section>';
  if(!Object.keys(A.raw).length)return h+need('ยังไม่มีข้อมูล','นำเข้าไฟล์ CSV หรือกด “โหลดชุดข้อมูลโจทย์” เพื่อเริ่มต้น');
  h+='<section class="card"><h2>สถานะไฟล์</h2><div class="tw"><table><tr><th>ไฟล์</th><th>สถานะ</th><th>แถวข้อมูลดิบ</th><th>แถวหลังทำความสะอาด</th></tr>'+Object.keys(SPEC).map(f=>'<tr><td>'+f+'.csv</td><td>'+(A.raw[f]!=null?(c&&c.counts[f]?'<span class="b ok">อ่านแล้ว</span>':'<span class="b bad">อ่านไม่ได้</span>'):'<span class="b bad">ขาดหาย</span>')+'</td><td>'+(c&&c.counts[f]?c.counts[f].raw:'-')+'</td><td>'+(c&&c.counts[f]?c.counts[f].clean:'-')+'</td></tr>').join('')+'</table></div></section>';
- h+='<section class="card"><h2>ผลตรวจสอบข้อมูล</h2>'+(errs.length?'<p><span class="b bad">พบข้อผิดพลาด '+errs.length+' รายการ</span> ต้องแก้ไขก่อนจัดตาราง</p><div class="tw"><table><tr><th>ไฟล์</th><th>แถว</th><th>คอลัมน์</th><th>สาเหตุ</th><th>วิธีแก้ไข</th></tr>'+errs.map(i=>'<tr><td>'+esc(i.file)+'</td><td>'+esc(i.row)+'</td><td>'+esc(i.col)+'</td><td>'+esc(i.cause)+'</td><td>'+esc(i.fix)+'</td></tr>').join('')+'</table></div>':'<p><span class="b ok">ผ่าน</span> ไม่พบข้อผิดพลาดที่ขัดขวางการจัดตาราง</p>')+'</section>';
+ h+='<section class="card"><h2>ผลตรวจสอบข้อมูล</h2>'+(errs.length?'<p><span class="b bad">พบข้อผิดพลาด '+errs.length+' รายการ</span> ต้องแก้ไขก่อนจัดตาราง</p><div class="tw"><table><tr><th>ไฟล์</th><th>แถว</th><th>คอลัมน์</th><th>สาเหตุ</th><th>วิธีแก้ไข</th></tr>'+errs.map(i=>'<tr><td>'+esc(i.file)+'</td><td>'+esc(i.row)+'</td><td>'+esc(i.col)+'</td><td>'+esc(i.cause)+'</td><td>'+esc(i.fix)+'</td></tr>').join('')+'</table></div>':'<p><span class="b ok">ผ่าน</span> ไม่พบข้อผิดพลาด</p>')+'</section>';
  if(c&&c.D){h+='<section class="card"><div class="row sp"><h2>บันทึก Data Cleansing ('+c.log.length+' รายการ)</h2><button class="ghost" data-act="dllog" '+(c.log.length?'':'disabled')+'>ส่งออก cleansing_log.csv</button></div>'+(c.log.length?'<div class="tw" style="max-height:300px;overflow:auto"><table><tr><th>ไฟล์</th><th>แถว</th><th>คอลัมน์</th><th>ค่าเดิม</th><th>ค่าใหม่</th><th>เหตุผล</th></tr>'+c.log.map(l=>'<tr><td>'+esc(l.file)+'</td><td>'+l.row+'</td><td>'+esc(l.col)+'</td><td><code>'+esc(l.old)+'</code></td><td><code>'+esc(l.nw)+'</code></td><td>'+esc(l.reason)+'</td></tr>').join('')+'</table></div>':'<p>ไม่มีรายการที่ต้องแก้ไข</p>')+'</section>';
   h+='<section class="card"><div class="row sp"><h2>ตัวอย่างข้อมูล (หลังทำความสะอาด)</h2><select id="pv">'+Object.keys(SPEC).map(f=>'<option value="'+f+'" '+(f===(A.pv||'offerings')?'selected':'')+'>'+f+'.csv</option>').join('')+'</select></div><div class="tw" id="pvt">'+pvTable(A.pv||'offerings')+'</div></section>';
-  h+='<section class="card"><h2>ยืนยันการใช้ข้อมูล</h2>'+(A.confirmed?'<p><span class="b ok">ยืนยันแล้ว</span> ชุดข้อมูล: '+esc(A.ds)+' ไปขั้น “จัดตาราง” ได้</p>':'<p>ตรวจสอบข้อมูลด้านบนแล้วกดยืนยันเพื่อปลดล็อกการจัดตาราง</p><button data-act="confirm" '+(errs.length?'disabled':'')+'>ยืนยันใช้ข้อมูลที่ทำความสะอาดแล้ว</button>')+'</section>'}
+  h+='<section class="card"><h2>ยืนยันการใช้ข้อมูล</h2>'+(A.confirmed?'<p><span class="b ok">ยืนยันแล้ว</span> ชุดข้อมูล: '+esc(A.ds)+' ไปขั้น “จัดตาราง” ได้</p>':'<p>ตรวจข้อมูลแล้วกดยืนยันเพื่อจัดตาราง</p><button data-act="confirm" '+(errs.length?'disabled':'')+'>ยืนยันใช้ข้อมูลที่ทำความสะอาดแล้ว</button>')+'</section>'}
  return h}
 function pvTable(f){const r=A.cl&&A.cl.D&&A.cl.D[f];if(!r)return'';const cols=SPEC[f].cols;return'<table><tr>'+cols.map(c=>'<th>'+c+'</th>').join('')+'</tr>'+r.slice(0,8).map(o=>'<tr>'+cols.map(c=>'<td>'+esc(o[c])+'</td>').join('')+'</tr>').join('')+'</table><p class="hint">แสดง 8 จาก '+r.length+' แถว</p>'}
-function reprocess(){A.cl=cleanse(A.raw);A.confirmed=false;A.sol=null;A.rep=null;go('data')}
+function reprocess(){A.undo=[];A.cl=cleanse(A.raw);A.confirmed=false;A.sol=null;A.rep=null;go('data')}
 async function loadFiles(files){const bad=[];let rep=false;if((A.sol||A.confirmed)&&!confirm('การนำเข้าไฟล์ใหม่จะแทนที่ข้อมูลและผลตารางปัจจุบัน (ประวัติเดิมยังอยู่) ต้องการดำเนินการต่อหรือไม่?'))return;
  for(const f of files){if(!/\.csv$/i.test(f.name)){bad.push(f.name+' (ไม่ใช่ไฟล์ .csv)');continue}const k=f.name.replace(/\.csv$/i,'').toLowerCase();if(!SPEC[k]){bad.push(f.name+' (ชื่อไฟล์ไม่อยู่ในชุดข้อมูล 10 ไฟล์)');continue}
   try{A.raw[k]=await f.text();rep=true}catch(e){bad.push(f.name+' (อ่านไม่ได้)')}}
  A.ds='ไฟล์ที่อัปโหลด '+new Date().toLocaleString('th-TH');A.msg=bad.length?'ข้ามไฟล์: '+bad.join(', '):'';if(rep)reprocess();else go('data')}
 /* ---- Page: Generate ---- */
-function pGen(){if(!A.confirmed)return need('ยังจัดตารางไม่ได้','ต้องนำเข้าและยืนยันข้อมูลที่ผ่านการตรวจสอบในขั้น “ข้อมูล” ก่อน','data','ไปขั้นข้อมูล');
+function pGen(){if(!A.confirmed)return need('ยังจัดตารางไม่ได้','ต้องนำเข้าและยืนยันข้อมูลก่อน','data','ไปขั้นข้อมูล');
  const D=A.cl.D,L=A.last;return'<section class="card"><h2>จัดตารางอัตโนมัติ</h2><p>ชุดข้อมูล: '+esc(A.ds)+' · '+D.offerings.length+' รายการสอน · '+D.offerings.reduce((a,o)=>a+o.periods,0)+' คาบ · '+D.groups.length+' กลุ่ม · '+D.teachers.length+' ครู · '+D.rooms.length+' ห้อง</p>'+
- '<div class="row"><label>จำนวนรอบ (seed) <input id="gs" type="number" min="1" max="60" value="'+(A.gs||8)+'" style="width:90px"></label><label>เวลาจำกัด (วินาที) <input id="gt" type="number" min="2" max="300" value="'+(A.gt||20)+'" style="width:90px"></label><button data-act="run" '+(A.run?'disabled':'')+'>'+(A.run?'กำลังคำนวณ…':'เริ่มจัดตาราง')+'</button></div>'+
- '<div class="bar"><i id="pb" style="width:'+(A.run&&A.prog?Math.round(100*A.prog.round/A.prog.total):L?100:0)+'%"></i></div><p id="pt" class="hint">'+(A.run?'กำลังเริ่ม…':'พร้อมทำงาน')+'</p></section>'+(L?genResult(L):'')}
-function genResult(L){return'<section class="card"><h2>ผลรอบล่าสุด</h2><p>สถานะตรวจสอบ: '+badge(L.status)+' · ใช้เวลา '+L.ms+' ms'+(L.cost!=null?' · คะแนนคุณภาพ '+L.score+'/100 (cost '+L.cost+')':'')+'</p>'+
- (L.problems&&L.problems.length?'<p style="color:var(--bad)">ข้อมูลนำเข้ายังไม่พร้อม:</p><ul>'+L.problems.map(p=>'<li>'+esc(p)+'</li>').join('')+'</ul>':'')+(L.stuck&&L.stuck.length?'<p style="color:var(--bad)">หาคำตอบที่ผ่านทุกข้อบังคับไม่พบ — ข้อจำกัดที่ยังแก้ไม่ได้:</p><ul>'+L.stuck.map(p=>'<li>'+esc(p)+'</li>').join('')+'</ul>':'')+
- (L.rounds&&L.rounds.length?'<div class="tw"><table><tr><th>seed</th><th>พบคำตอบ</th><th>nodes</th><th>cost</th><th>เวลา (ms)</th></tr>'+L.rounds.map(r=>'<tr><td>'+r.seed+'</td><td>'+(r.ok?'ใช่':'ไม่ (ถึงขีดจำกัด/ตัน)')+'</td><td>'+r.nodes+'</td><td>'+(r.cost!=null?r.cost:'-')+'</td><td>'+r.ms+'</td></tr>').join('')+'</table></div>':'')+
+ '<div class="row"><label>จำนวนรอบที่ลอง <input id="gs" type="number" min="1" max="60" value="'+(A.gs||8)+'" style="width:90px"></label><label>เวลาจำกัด (วินาที) <input id="gt" type="number" min="2" max="300" value="'+(A.gt||20)+'" style="width:90px"></label><button data-act="run" '+(A.run?'disabled':'')+'>'+(A.run?'กำลังคำนวณ…':'เริ่มจัดตาราง')+'</button>'+(A.run?'<button class="ghost" data-act="cancel">ยกเลิก</button>':'')+'</div>'+
+ '<div class="bar'+(A.run?' run':'')+'"><i id="pb" style="width:'+(A.run?Math.round((A.disp||0)*100):L?100:0)+'%"></i></div><p id="pt" class="hint">'+(A.run?'กำลังเริ่ม…':'พร้อมทำงาน')+'</p></section>'+(L?genResult(L):'')}
+function genResult(L){return'<section class="card'+(A.fresh?' pop':'')+'">'+(L.status==='PASS'?okMark():'')+'<h2>ผลรอบล่าสุด</h2><p>สถานะตรวจสอบ: '+badge(L.status)+' · ใช้เวลา '+L.ms+' ms'+(L.cost!=null?' · คะแนนคุณภาพ '+L.score+'/100 (cost '+L.cost+')':'')+'</p>'+
+ (L.problems&&L.problems.length?'<p style="color:var(--bad)">ข้อมูลนำเข้ายังไม่พร้อม:</p><ul>'+L.problems.map(p=>'<li>'+esc(p)+'</li>').join('')+'</ul>':'')+(L.stuck&&L.stuck.length?'<p style="color:var(--bad)">ไม่พบคำตอบที่ผ่านทุกข้อ — จุดที่ติด:</p><ul>'+L.stuck.map(p=>'<li>'+esc(p)+'</li>').join('')+'</ul>':'')+
+ (L.rounds&&L.rounds.length?'<details class="chk"><summary>รายละเอียดทางเทคนิคแต่ละรอบ</summary><div class="tw"><table><tr><th>seed</th><th>พบคำตอบ</th><th>nodes</th><th>cost</th><th>เวลา (ms)</th></tr>'+L.rounds.map(r=>'<tr><td>'+r.seed+'</td><td>'+(r.ok?'ใช่':'ไม่ (ถึงขีดจำกัด/ตัน)')+'</td><td>'+r.nodes+'</td><td>'+(r.cost!=null?r.cost:'-')+'</td><td>'+r.ms+'</td></tr>').join('')+'</table></div></details>':'')+
  (L.status==='PASS'?'<p><button data-go="tt">ดูตารางเรียน</button> <button class="ghost" data-go="chk">ดูรายงานตรวจสอบ</button></p>':'')+'</section>'}
 const badge=s=>'<span class="b '+(s==='PASS'?'ok':s==='FAIL'||s==='INVALID INPUT'?'bad':'warn')+'">'+esc(s)+'</span>';
 async function runGen(){const D=A.cl.D;A.gs=Math.max(1,+$('#gs').value||8);A.gt=Math.max(2,+$('#gt').value||20);A.run=true;const t0=new Date();go('gen');
- const r=await solve(D,{seeds:A.gs,limitMs:A.gt*1000,onProgress:p=>{A.prog=p;const b=$('#pb'),t=$('#pt');if(b)b.style.width=Math.round(100*p.round/p.total)+'%';if(t)t.textContent='รอบ '+p.round+'/'+p.total+' · '+(p.ms/1000).toFixed(1)+' วินาที · cost ดีที่สุด '+(p.best==null?'ยังไม่พบ':p.best)}});
+ A.prog={round:0,total:A.gs,ms:0,t:performance.now(),best:null};A.disp=0;const tk=setInterval(tick,80);const r=await solveW(D,{seeds:A.gs,limitMs:A.gt*1000},p=>{A.prog=Object.assign({},p,{t:performance.now()})}).catch(e=>({engine:'INVALID INPUT',problems:[String(e&&e.message||e)],rounds:[],ms:0}));clearInterval(tk);if(r.engine==='CANCELLED'){A.run=false;go('gen');return}
  A.run=false;let status,rep=null;
  if(r.engine==='INVALID INPUT')status='INVALID INPUT';else if(r.engine==='FOUND'){rep=validate(D,r.rows);status=rep.status}else status='INCOMPLETE';
  A.last={status,ms:r.ms,problems:r.problems,stuck:r.stuck,rounds:r.rounds,cost:r.soft&&r.soft.cost,score:r.soft&&r.soft.score};
- if(r.engine==='FOUND'){A.sol=r.rows;A.rep=rep}
- A.hist.unshift({id:Date.now(),at:t0.toISOString(),ds:A.ds,sig:sig(D),offerings:D.offerings.length,periods:rep?rep.stats.periodsPlaced:0,need:D.offerings.reduce((a,o)=>a+o.periods,0),status,ms:r.ms,cost:A.last.cost,score:A.last.score,seed:r.seed,method:'CSP: MRV+forward-check+backtracking+random restarts+local search ('+A.gs+' รอบ)',err:(r.problems||r.stuck||[]).join(' | '),rows:r.rows||null});saveHist();go('gen')}
+ if(r.engine==='FOUND'){A.sol=r.rows;A.rep=rep;A.undo=[]}
+ A.hist.unshift({id:Date.now(),at:t0.toISOString(),ds:A.ds,sig:sig(D),offerings:D.offerings.length,periods:rep?rep.stats.periodsPlaced:0,need:D.offerings.reduce((a,o)=>a+o.periods,0),status,ms:r.ms,cost:A.last.cost,score:A.last.score,seed:r.seed,method:'CSP: MRV+forward-check+backtracking+random restarts+local search ('+A.gs+' รอบ)',err:(r.problems||r.stuck||[]).join(' | '),rows:r.rows||null});saveHist();A.fresh=status==='PASS';go('gen');if(A.fresh){burst();setTimeout(()=>{A.fresh=false},50)}}
 /* ---- Page: Timetable ---- */
 const pl=()=>{const D=A.cl.D,o=new Map(D.offerings.map(x=>[x.offering_id,x]));return A.sol.map(s=>({id:s.offering_id,o:o.get(s.offering_id),day:s.day,st:+s.start_period,room:s.room_id})).filter(p=>p.o)};
 function pTT(){if(!A.sol)return need('ยังไม่มีตารางเรียน','จัดตารางในขั้น “จัดตาราง” หรือเปิดผลจากประวัติ','gen','ไปขั้นจัดตาราง')
  return'<section class="card"><div class="row sp noprint"><div class="row">'+[['group','ตามกลุ่มเรียน'],['teacher','ตามครู'],['room','ตามห้องเรียน']].map(x=>'<button class="'+(A.view===x[0]?'':'ghost')+'" data-view="'+x[0]+'">'+x[1]+'</button>').join('')+'</div><div class="row"><input id="tq" placeholder="ค้นหา…" aria-label="ค้นหา" value="'+esc(A.q)+'"><button class="ghost step" data-act="prev" aria-label="ก่อนหน้า">‹</button><select id="ts" aria-label="เลือกตาราง"></select><button class="ghost step" data-act="next" aria-label="ถัดไป">›</button></div></div>'+
- '<div class="row sp tbar"><h2 id="th"></h2><div class="row noprint"><button data-act="png">บันทึกเป็นรูป PNG</button><button class="ghost" data-act="pngall">PNG ทั้งหมด</button><button class="ghost" data-act="print">พิมพ์</button></div></div><div class="tw" id="tg" style="margin-top:12px"></div></section>'}
+ '<div class="row sp tbar"><h2 id="th"></h2><div class="row noprint"><button data-act="png">บันทึกเป็นรูป PNG</button><button class="ghost" data-act="pngall">PNG ทั้งหมด</button><button class="ghost" data-act="print">พิมพ์</button></div></div>'+editBar()+'<div class="tw" id="tg" style="margin-top:12px"></div></section>'}
 function entities(){const D=A.cl.D,q=A.q.trim().toLowerCase();const L=A.view==='group'?D.groups.map(g=>[g.group_id,g.group_id+' · '+g.group_name]):A.view==='teacher'?D.teachers.map(t=>[t.teacher_id,t.teacher_id+' · '+t.teacher_name]):D.rooms.map(r=>[r.room_id,r.room_id+' · '+r.room_name+' ('+r.room_type+')']);return L.filter(x=>!q||x[1].toLowerCase().includes(q))}
 function ttRender(){const D=A.cl.D,es=entities(),s=$('#ts');s.innerHTML=es.map(e=>'<option value="'+esc(e[0])+'"'+(e[0]===A.sel?' selected':'')+'>'+esc(e[1])+'</option>').join('');if(!es.length){$('#th').textContent='ไม่พบรายการที่ค้นหา';$('#tg').innerHTML='';return}
  if(!es.some(e=>e[0]===A.sel))A.sel=es[0][0];s.value=A.sel;$('#th').textContent=es.find(e=>e[0]===A.sel)[1];
  A.ttItems=ttItems(A.sel);$('#tg').innerHTML=grid(D,A.ttItems)}
 const rmn=(m,id)=>{const n=(m.get(id)||{}).room_name||id;return/^ห้อง/.test(n)?n:'ห้อง '+n};
 function ttItems(sel){const D=A.cl.D;const cn=new Map(D.courses.map(c=>[c.course_id,c])),tn=new Map(D.teachers.map(t=>[t.teacher_id,t])),gn=new Map(D.groups.map(g=>[g.group_id,g])),rn=new Map(D.rooms.map(r=>[r.room_id,r])),ci=D.courses.map(c=>c.course_id);
- return pl().filter(p=>(A.view==='group'?p.o.group_id:A.view==='teacher'?p.o.teacher_id:p.room)===sel).map(p=>{const c=cn.get(p.o.course_id),sub=A.view==='group'?[tn.get(p.o.teacher_id).teacher_name,rmn(rn,p.room)]:A.view==='teacher'?[gn.get(p.o.group_id).group_name,rmn(rn,p.room)]:[gn.get(p.o.group_id).group_name,tn.get(p.o.teacher_id).teacher_name];return{day:p.day,st:p.st,n:p.o.periods,t:c.course_name,c:p.o.course_id,sub,hue:(ci.indexOf(p.o.course_id)*53+200)%360}});}
+ return pl().filter(p=>(A.view==='group'?p.o.group_id:A.view==='teacher'?p.o.teacher_id:p.room)===sel).map(p=>{const c=cn.get(p.o.course_id),sub=A.view==='group'?[tn.get(p.o.teacher_id).teacher_name,rmn(rn,p.room)]:A.view==='teacher'?[gn.get(p.o.group_id).group_name,rmn(rn,p.room)]:[gn.get(p.o.group_id).group_name,tn.get(p.o.teacher_id).teacher_name];return{id:p.id,day:p.day,st:p.st,n:p.o.periods,t:c.course_name,c:p.o.course_id,sub,hue:(ci.indexOf(p.o.course_id)*53+200)%360}});}
 /* ---- PNG export (วาดลง canvas โดยตรง ไม่พึ่งไลบรารีภายนอก) ---- */
 function ttPNG(sel,label){const D=A.cl.D,items=ttItems(sel),T=buildTime(D),cols=ttCols(T),t0=T.per[T.days[0]],S=2,F='"Noto Sans Thai","Sarabun","Segoe UI",system-ui,sans-serif';
  const dayW=96,perW=156,gapW=30,hdrH=60,rowH=104,pad=28,titleH=76,cw=cols.map(c=>c.gap?gapW:perW),gw=cw.reduce((a,b)=>a+b,0),W=pad*2+dayW+gw,H=pad*2+titleH+hdrH+rowH*T.days.length+24;
@@ -415,26 +442,26 @@ function ttStep(d){const es=entities(),i=es.findIndex(e=>e[0]===A.sel);if(!es.le
 function ttCols(T){const cols=[];for(let p=1;p<=T.P;p++){if(p>1){const a=T.per[T.days[0]][p-1],b=T.per[T.days[0]][p];if(a&&b&&a.e!==b.s)cols.push({gap:1})}cols.push({p})}return cols}
 function grid(D,items){const T=buildTime(D),cols=ttCols(T);
  const t0=T.per[T.days[0]];let h='<table class="tt"><tr><th style="width:84px">วัน</th>'+cols.map(c=>c.gap?'<th style="width:26px">พัก</th>':'<th>คาบ '+c.p+'<small>'+(t0[c.p]?t0[c.p].a+'–'+t0[c.p].b:'')+'</small></th>').join('')+'</tr>';
- T.days.forEach(d=>{h+='<tr><td class="d">'+DTH[d]+'</td>';const its=items.filter(i=>i.day===d);let i=0;while(i<cols.length){const c=cols[i];if(c.gap){h+='<td class="gap"></td>';i++;continue}
+ T.days.forEach(d=>{h+='<tr data-d="'+d+'"><td class="d">'+DTH[d]+'</td>';const its=items.filter(i=>i.day===d);let i=0;while(i<cols.length){const c=cols[i];if(c.gap){h+='<td class="gap"></td>';i++;continue}
   const it=its.find(x=>x.st===c.p);if(it){let span=0,k=i,left=it.n;while(left>0&&k<cols.length){if(!cols[k].gap)left--;span++;k++}
-   h+='<td colspan="'+span+'"><div class="cell" style="background:hsl('+it.hue+' 40% 26%/.7);border-left:3px solid hsl('+it.hue+' 70% 62%)"><b>'+esc(it.t)+'</b><span>'+esc(it.c)+'</span>'+it.sub.map(s=>'<span>'+esc(s)+'</span>').join('')+'</div></td>';i+=span}else{h+='<td class="hint">ว่าง</td>';i++}}h+='</tr>'});return h+'</table>'}
+   h+='<td colspan="'+span+'"><div class="cell" draggable="true" data-o="'+esc(it.id)+'" style="background:hsl('+it.hue+' var(--cs) var(--cl)/.8);border-left:3px solid hsl('+it.hue+' 70% 62%)"><b>'+esc(it.t)+'</b><span>'+esc(it.c)+'</span>'+it.sub.map(s=>'<span>'+esc(s)+'</span>').join('')+'</div></td>';i+=span}else{h+='<td class="hint">ว่าง</td>';i++}}h+='</tr>'});return h+'</table>'}
 /* ---- Page: Check / Export ---- */
 function pChk(){const r=A.rep;let h='<section class="card"><h2>ตรวจสอบความถูกต้อง</h2><div class="row noprint"><label class="ghost" style="border:1px solid var(--line);border-radius:12px;padding:.5em 1em;cursor:pointer">นำเข้า solution.csv เพื่อตรวจ<input type="file" id="sf" accept=".csv" hidden></label>'+(A.cl&&A.cl.D&&A.sol?'<button class="ghost" data-act="revalidate">ตรวจตารางปัจจุบันใหม่</button>':'')+'</div></section>';
  if(!r)return h+need('ยังไม่มีผลให้ตรวจ','จัดตารางหรือนำเข้า solution.csv (ต้องยืนยันข้อมูลก่อน)','gen','ไปขั้นจัดตาราง');
  const s=r.stats;h+='<section class="card"><div class="row sp"><h2>สถานะรวม '+badge(r.status)+'</h2><div class="row"><button data-act="dlsol" '+(r.status==='PASS'?'':'disabled')+'>ดาวน์โหลด solution.csv</button><button class="ghost" data-act="dlrep">รายงานตรวจสอบ (CSV)</button></div></div>'+(r.status==='PASS'?'':'<p style="color:var(--warn)">ส่งออก solution.csv ได้เมื่อสถานะเป็น PASS เท่านั้น</p>')+
  '<div class="stat"><div><b>'+s.required+'</b><span>offering ที่ต้องจัด</span></div><div><b>'+s.placed+'</b><span>จัดได้</span></div><div><b>'+s.periodsPlaced+'/'+s.periodsRequired+'</b><span>คาบที่จัดได้/ต้องการ</span></div><div><b>'+s.missing.length+'</b><span>ขาด</span></div>'+(A.last&&A.last.cost!=null&&r===A.rep?'<div><b>'+A.last.score+'</b><span>คะแนนคุณภาพ (cost '+A.last.cost+')</span></div>':'')+'</div>'+
  r.checks.map(c=>'<details class="chk"'+(c.items.length?' open':'')+'><summary><span class="b '+(c.items.length?'bad':'ok')+'">'+(c.items.length?'ไม่ผ่าน '+c.items.length:'ผ่าน')+'</span><b>'+c.no+'. '+esc(c.name)+'</b></summary>'+(c.items.length?'<ul>'+c.items.slice(0,60).map(i=>'<li>'+esc(i)+'</li>').join('')+'</ul>':'')+'</details>').join('')+
- '<p class="hint">สูตรคะแนน: cost = 3×ช่องว่างระหว่างคาบของครู + 2×ช่องว่างของกลุ่ม + Σ(ภาระรายวันของกลุ่ม − ค่าเฉลี่ย)² ; คะแนน = 100 ÷ (1 + cost ÷ จำนวนคาบทั้งหมด) — ใช้เปรียบเทียบเฉพาะชุดข้อมูลเดียวกัน</p></section>';return h}
+ '<p class="hint">คะแนน = 100 ÷ (1 + cost ÷ คาบทั้งหมด) เทียบได้เฉพาะชุดข้อมูลเดียวกัน</p></section>';return h}
 /* ---- Page: History ---- */
-function pHist(){let h='<section class="card"><div class="row sp"><h2>ประวัติการจัดตาราง</h2><button class="ghost" data-act="clearhist" '+(A.hist.length?'':'disabled')+'>ล้างประวัติ</button></div><p class="hint">ประวัติเก็บใน localStorage ผูกกับเบราว์เซอร์และเครื่องนี้ ไม่ใช่ฐานข้อมูลกลาง และระบบไม่เขียนทับประวัติเดิม</p>';
+function pHist(){let h='<section class="card"><div class="row sp"><h2>ประวัติการจัดตาราง</h2><button class="ghost" data-act="clearhist" '+(A.hist.length?'':'disabled')+'>ล้างประวัติ</button></div><p class="hint">ประวัติเก็บในเบราว์เซอร์เครื่องนี้เท่านั้น</p>';
  if(!A.hist.length)return h+'</section>'+need('ยังไม่มีประวัติ','ผลการจัดตารางแต่ละรอบจะถูกบันทึกที่นี่');
  h+='<div class="tw"><table><tr><th>เทียบ</th><th>เวลา</th><th>ชุดข้อมูล</th><th>offering</th><th>คาบ</th><th>สถานะ</th><th>เวลา(ms)</th><th>คะแนน</th><th>วิธี/seed</th><th></th></tr>'+A.hist.map(e=>'<tr><td><input type="checkbox" data-cmp="'+e.id+'" '+(A.cmp.includes(e.id)?'checked':'')+'></td><td>'+esc(new Date(e.at).toLocaleString('th-TH'))+'</td><td>'+esc(e.ds)+'</td><td>'+e.offerings+'</td><td>'+e.periods+'/'+e.need+'</td><td>'+badge(e.status)+(e.err?'<div class="hint">'+esc(e.err.slice(0,160))+'</div>':'')+'</td><td>'+e.ms+'</td><td>'+(e.score!=null?e.score+' (cost '+e.cost+')':'-')+'</td><td class="hint">'+esc(e.method)+(e.seed!=null?' · seed '+e.seed:'')+'</td><td>'+(e.rows?'<button class="ghost" data-act="open" data-id="'+e.id+'">เปิดดู</button>':'')+'</td></tr>').join('')+'</table></div></section>';
  if(A.cmp.length===2){const [a,b]=A.cmp.map(id=>A.hist.find(e=>e.id===id)),f=[['สถานะ',e=>e.status],['คาบที่จัดได้',e=>e.periods+'/'+e.need],['เวลา (ms)',e=>e.ms],['cost',e=>e.cost!=null?e.cost:'-'],['คะแนน',e=>e.score!=null?e.score:'-'],['seed',e=>e.seed!=null?e.seed:'-'],['ชุดข้อมูล (signature)',e=>e.sig]];
   h+='<section class="card"><h2>เปรียบเทียบ 2 รอบ</h2><table><tr><th></th><th>'+esc(new Date(a.at).toLocaleString('th-TH'))+'</th><th>'+esc(new Date(b.at).toLocaleString('th-TH'))+'</th></tr>'+f.map(x=>'<tr><td>'+x[0]+'</td><td>'+esc(x[1](a))+'</td><td>'+esc(x[1](b))+'</td></tr>').join('')+'</table>'+(a.sig!==b.sig?'<p style="color:var(--warn)">สองรอบใช้ชุดข้อมูลต่างกัน การเทียบคะแนนอาจไม่ยุติธรรม</p>':'')+'</section>'}
  else if(A.cmp.length>2)A.cmp=A.cmp.slice(-2);return h}
 /* ---- Page: Help & Tests ---- */
-function pHelp(){const t=A.tests;return'<section class="card"><h2>คู่มือสั้น</h2><ol><li><b>ข้อมูล</b> – ลากวาง CSV 10 ไฟล์ (หรือกด “โหลดชุดข้อมูลโจทย์”) → ดูผลตรวจและบันทึก cleansing → กดยืนยัน</li><li><b>จัดตาราง</b> – ตั้งจำนวนรอบและเวลาจำกัด → เริ่มจัดตาราง</li><li><b>ตารางเรียน</b> – ดูตามกลุ่ม/ครู/ห้อง ค้นหา และพิมพ์ได้</li><li><b>ตรวจสอบ/ส่งออก</b> – ดูผล Hard Constraints 12 ข้อ ดาวน์โหลด solution.csv เมื่อ PASS เท่านั้น</li><li><b>ประวัติ</b> – เปิดดูและเปรียบเทียบผลย้อนหลัง</li></ol></section>'+
- '<section class="card"><h2>อัลกอริทึมและข้อจำกัด</h2><p><b>ข้อมูล:</b> ทำความสะอาดรหัส/ตัวเลข/ประเภทห้อง ลบเฉพาะแถวซ้ำที่เหมือนทุกช่อง ไม่เดาค่าที่ขาด ไม่ลดคาบ · <b>วางตาราง:</b> สร้างตัวเลือก (วัน คาบเริ่ม ห้อง) ที่ถูกกติกาล่วงหน้า วาง fixed ก่อน แล้ว backtracking เลือกรายการที่เหลือตัวเลือกน้อยสุด (MRV) พร้อมตัดตัวเลือกที่ชน และ random restart ด้วย seed · <b>ปรับคุณภาพ:</b> local search ย้ายทีละรายการเพื่อลด cost · <b>ตรวจ:</b> Validator แยกจาก Engine ตรวจ 12 ข้อทุกครั้ง · <b>ไม่พบคำตอบ:</b> รายงาน INCOMPLETE พร้อมรายการที่ติดตัน ไม่ส่งออกว่าสำเร็จ</p><p>ข้อจำกัด: Login เป็น Frontend-only ไม่ปลอดภัยจริง · ประวัติอยู่ใน localStorage · ไม่มี Backend · Engine เป็น heuristic ไม่รับประกันว่าพบคำตอบทุกกรณี</p><p>บัญชีทดลอง: <code>admin</code> / <code>admin</code></p></section>'+
+function pHelp(){const t=A.tests;return'<section class="card"><h2>คู่มือสั้น</h2><ol><li><b>ข้อมูล</b> – นำเข้า CSV 10 ไฟล์หรือโหลดชุดโจทย์ แล้วกดยืนยัน</li><li><b>จัดตาราง</b> – ตั้งจำนวนรอบและเวลา แล้วเริ่ม</li><li><b>ตารางเรียน</b> – ดูตามกลุ่ม/ครู/ห้อง พิมพ์หรือบันทึกเป็น PNG</li><li><b>ตรวจสอบ/ส่งออก</b> – ดาวน์โหลด solution.csv เมื่อ PASS</li><li><b>ประวัติ</b> – เปิดและเทียบผลย้อนหลัง</li></ol></section>'+
+ '<section class="card"><h2>อัลกอริทึมและข้อจำกัด</h2><p>วางตารางด้วย backtracking (MRV) พร้อม random restart แล้วปรับคุณภาพด้วย local search · Validator แยกจากเอนจินและตรวจ 12 ข้อทุกครั้ง · ถ้าไม่พบคำตอบจะรายงานจุดที่ติด</p><p>ข้อจำกัด: ล็อกอินเป็นต้นแบบ · ประวัติอยู่ใน localStorage · ไม่มี Backend · เอนจินเป็น heuristic ไม่รับประกันว่าพบคำตอบทุกกรณี</p><p>บัญชีทดลอง: <code>admin</code> / <code>admin</code></p></section>'+
  '<section class="card"><div class="row sp"><h2>ชุดทดสอบ 12 กรณี (รันจริงกับข้อมูลโจทย์)</h2><button data-act="tests" '+(A.run?'disabled':'')+'>รันการทดสอบ</button></div>'+(t?'<p>ผ่าน '+t.filter(x=>x.ok).length+' / '+t.length+(t.length<12?' (กำลังรัน…)':'')+'</p><div class="tw"><table><tr><th>ผล</th><th>กรณี</th><th>รายละเอียด</th></tr>'+t.map(x=>'<tr><td>'+(x.ok?'<span class="b ok">ผ่าน</span>':'<span class="b bad">ไม่ผ่าน</span>')+'</td><td>'+esc(x.n)+'</td><td class="hint">'+esc(x.d)+'</td></tr>').join('')+'</table></div>':'<p class="hint">ยังไม่ได้รัน</p>')+'</section>'}
 /* ---- Events ---- */
 const ACT={
@@ -465,6 +492,54 @@ try{A.auth=!!sessionStorage.getItem('ppdc_in')}catch(e){}
 function route(){const m=/^#\/app\/(\w+)/.exec(location.hash),ok=m&&PAGES.some(x=>x[0]===m[1]);
  if(A.auth){$('#login').hidden=true;$('#app').hidden=false;if(!ok)go('data');else if(m[1]!==A.page||!$('#view').innerHTML)go(m[1])}
  else{$('#app').hidden=true;$('#login').hidden=false;if(location.hash!=='#/login')history.replaceState(null,'','#/login')}}
+
+A.undo=[];
+function persist(){try{localStorage.setItem('ppdc_work',JSON.stringify({raw:A.raw,ds:A.ds,confirmed:A.confirmed,sol:A.sol}))}catch(e){}}
+try{const w=JSON.parse(localStorage.getItem('ppdc_work')||'null');if(w&&w.raw&&Object.keys(w.raw).length){A.raw=w.raw;A.ds=w.ds||'';A.cl=cleanse(A.raw);if(A.cl&&A.cl.D&&w.confirmed){A.confirmed=true;if(w.sol&&w.sol.length){A.sol=w.sol;A.rep=validate(A.cl.D,A.sol)}}}}catch(e){}
+try{if(localStorage.getItem('ppdc_theme')==='light')document.documentElement.dataset.theme='light'}catch(e){}
+$('#thm').onclick=()=>{const d=document.documentElement,n=d.dataset.theme==='dark'?'light':'dark';d.dataset.theme=n;try{localStorage.setItem('ppdc_theme',n)}catch(e){}};
+ACT.undo=()=>{if(A.undo.length){A.sol=A.undo.pop();A.rep=validate(A.cl.D,A.sol);go('tt')}};
+function editBar(){const r=A.rep,ok=r&&r.status==='PASS';return'<div class="row noprint" style="margin-top:10px">'+(r?badge(r.status):'')+'<span class="hint">'+(ok?'ลากวิชาไปวางในช่องสีเขียวเพื่อย้าย (ระบบตรวจกติกาครบทุกข้อให้ทุกครั้ง)':'ตารางนี้ยังไม่ผ่านทุกข้อ จึงปิดการลากย้าย')+'</span><button class="ghost" data-act="undo" '+(A.undo.length?'':'disabled')+'>ย้อนกลับ ('+A.undo.length+')</button><span id="dmsg" class="hint"></span></div>'}
+/* ---- ลากย้ายคาบ: ลองทุกช่อง/ห้อง แล้วให้ validate() ตัดสิน ---- */
+const DR={o:null,res:{},els:[]};
+function trySlots(id){const D=A.cl.D,off=D.offerings.find(x=>x.offering_id===id),cur=A.sol.find(r=>r.offering_id===id),ty=D.courses.find(c=>c.course_id===off.course_id).room_type,
+ rooms=[cur.room_id].concat(D.rooms.filter(r=>r.room_type===ty&&r.room_id!==cur.room_id).map(r=>r.room_id)),T=buildTime(D),res={};
+ T.days.forEach(d=>{for(let p=1;p<=T.P;p++){if(d===cur.day&&p===+cur.start_period)continue;let why='';
+  for(const rm of rooms){const rows=A.sol.map(r=>r.offering_id===id?{offering_id:id,day:d,start_period:p,room_id:rm}:r),v=validate(A.cl.D,rows);
+   if(v.status==='PASS'){res[d+'|'+p]={rows};break}
+   if(!why){const c=v.checks.find(c=>c.items.length);why=c?c.name+': '+c.items[0]:''}}
+  if(!res[d+'|'+p])res[d+'|'+p]={why}}});return res}
+function showHL(){const g=$('#tg');g.querySelectorAll('.hl').forEach(x=>x.remove());DR.els=[];const cols=ttCols(buildTime(A.cl.D)),ths=[...g.querySelectorAll('tr:first-child th')],gr=g.getBoundingClientRect(),n=A.cl.D.offerings.find(x=>x.offering_id===DR.o).periods;
+ g.querySelectorAll('tr[data-d]').forEach(tr=>{const tb=tr.getBoundingClientRect();for(const k in DR.res){const[d,p]=k.split('|');if(d!==tr.dataset.d||!DR.res[k].rows)continue;const i=cols.findIndex(c=>c.p===+p);if(i<0)continue;let j=i,left=n;while(left>0&&j<cols.length){if(!cols[j].gap)left--;j++}
+  const a=ths[i+1].getBoundingClientRect(),b=ths[j].getBoundingClientRect(),el=document.createElement('div');el.className='hl';el.style.cssText='left:'+(a.left-gr.left+g.scrollLeft)+'px;top:'+(tb.top-gr.top)+'px;width:'+(b.right-a.left)+'px;height:'+tb.height+'px';g.appendChild(el);DR.els.push({el,k})}})}
+function hit(e){const g=$('#tg');if(!g||!g.contains(e.target))return null;
+ for(const o of DR.els){const r=o.el.getBoundingClientRect();if(e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom)return{ok:true,rows:DR.res[o.k].rows}}
+ const tr=e.target.closest('tr[data-d]');if(!tr)return null;const ths=[...g.querySelectorAll('tr:first-child th')],cols=ttCols(buildTime(A.cl.D));
+ for(let i=1;i<ths.length;i++){const r=ths[i].getBoundingClientRect();if(e.clientX>=r.left&&e.clientX<r.right){const c=cols[i-1];if(c&&!c.gap){const x=DR.res[tr.dataset.d+'|'+c.p];return{ok:false,why:(x&&x.why)||'ตำแหน่งเดิม'}}}}return null}
+document.addEventListener('dragstart',e=>{const c=e.target.closest&&e.target.closest('.cell[data-o]');if(!c)return;if(!A.rep||A.rep.status!=='PASS'){e.preventDefault();return}
+ DR.o=c.dataset.o;e.dataTransfer.setData('text/plain',DR.o);e.dataTransfer.effectAllowed='move';DR.res=trySlots(DR.o);showHL();setTimeout(()=>c.classList.add('dragging'),0)});
+document.addEventListener('dragover',e=>{if(!DR.o)return;const h=hit(e),m=$('#dmsg');if(h&&h.ok){e.preventDefault();e.dataTransfer.dropEffect='move'}if(m)m.textContent=h?(h.ok?'✓ วางที่นี่ได้':'✗ วางไม่ได้ — '+h.why):''});
+document.addEventListener('drop',e=>{if(!DR.o)return;const h=hit(e);if(h&&h.ok){e.preventDefault();A.undo.push(A.sol);A.sol=h.rows;A.rep=validate(A.cl.D,A.sol);DR.o=null;go('tt')}});
+document.addEventListener('dragend',()=>{DR.o=null;const g=$('#tg');if(g)g.querySelectorAll('.hl').forEach(x=>x.remove());document.querySelectorAll('.cell.dragging').forEach(x=>x.classList.remove('dragging'))});
+
+/* ---- จัดตารางใน Web Worker: หน้าจอไม่ค้าง ยกเลิกได้ ---- */
+const WTAIL=";onmessage=async e=>{const{D,opt}=e.data;try{const r=await solve(D,Object.assign({},opt,{onProgress:p=>postMessage({t:'p',p:{round:p.round,total:p.total,ms:p.ms,best:p.best}})}));postMessage({t:'d',r})}catch(err){postMessage({t:'e',m:String(err&&err.message||err)})}}";
+function solveW(D,opt,onP){return new Promise((res,rej)=>{const main=()=>solve(D,Object.assign({},opt,{onProgress:onP})).then(res,rej);let w;
+ try{const all=[...document.scripts].map(x=>x.textContent).find(t=>t.includes('/*==ENGINE'+'_START==*/')),e=all.slice(all.indexOf('/*==ENGINE'+'_START==*/'),all.indexOf('/*==ENGINE'+'_END==*/'));
+  w=new Worker(URL.createObjectURL(new Blob([e+WTAIL],{type:'text/javascript'})))}catch(err){return main()}
+ const t0=Date.now();A.abort=()=>{w.terminate();A.abort=null;res({engine:'CANCELLED',ms:Date.now()-t0,rounds:[]})};
+ w.onmessage=e=>{const m=e.data;if(m.t==='p')onP(m.p);else{w.terminate();A.abort=null;m.t==='d'?res(m.r):rej(new Error(m.m))}};
+ w.onerror=()=>{w.terminate();A.abort=null;main()};
+ w.postMessage({D,opt:{seeds:opt.seeds,limitMs:opt.limitMs}})})}
+ACT.cancel=()=>{if(A.abort)A.abort()};
+function tick(){const p=A.prog,b=$('#pb'),t=$('#pt');if(!p||!A.run)return;const el=performance.now()-p.t,tg=Math.min(.98,(p.round+Math.min(.9,el/2500))/p.total);A.disp+=(tg-A.disp)*.12;
+ if(b)b.style.width=(A.disp*100).toFixed(1)+'%';if(t)t.textContent='กำลังคำนวณ… รอบ '+Math.min(p.round+1,p.total)+'/'+p.total+' · '+((p.ms+el)/1000).toFixed(1)+' วินาที'+(p.best==null?'':' · พบคำตอบแล้ว กำลังปรับให้ดีขึ้น')}
+/* ---- เอฟเฟ็กต์เมื่อจัดสำเร็จ ---- */
+const okMark=()=>'<div class="done"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="20"/><path d="M13 23l7 7 12-14"/></svg>จัดตารางสำเร็จ ผ่านครบทุกข้อ</div>';
+function burst(){if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;const c=document.createElement('canvas'),x=c.getContext('2d'),W=c.width=innerWidth,H=c.height=innerHeight,cs=['#5aa9ff','#9fd0ff','#4cd694','#f5c04a','#ff6b7a','#ffffff'];
+ c.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:99';document.body.appendChild(c);
+ const ps=Array.from({length:140},()=>({x:W/2+(Math.random()-.5)*160,y:H*.55,vx:(Math.random()-.5)*14,vy:-Math.random()*16-6,s:4+Math.random()*6,r:Math.random()*6,vr:(Math.random()-.5)*.4,c:cs[Math.random()*cs.length|0]})),t0=performance.now();
+ (function f(t){const k=t-t0;x.clearRect(0,0,W,H);ps.forEach(p=>{p.vy+=.35;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;x.save();x.globalAlpha=Math.max(0,1-k/2600);x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/3,p.s,p.s*.6);x.restore()});k<2600?requestAnimationFrame(f):c.remove()})(t0)}
 window.addEventListener('hashchange',route);route();
 /*==UI_END==*/
 </script>
